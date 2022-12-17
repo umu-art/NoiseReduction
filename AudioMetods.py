@@ -1,7 +1,5 @@
 import librosa
 import numpy as np
-from IPython.core.display_functions import display
-from IPython.lib.display import Audio
 import soundfile as sf
 from matplotlib import pyplot as plt
 
@@ -29,16 +27,11 @@ def calc_c(clean: np.ndarray, noise: np.ndarray, snr: float) -> float:
     return 10 ** f
 
 
-def adisplay(x, sr=SR):
-    display(Audio(x, rate=sr))
-
-
 def save_audio(file, x):
     sf.write(file, x, SR)
 
 
 def ashow(x, sr=SR):
-    adisplay(x, sr)
     plt.figure(figsize=(14, 5))
     librosa.display.specshow(librosa.amplitude_to_db(abs(librosa.stft(x)), ref=np.max), sr=sr, x_axis='s', y_axis='hz')
     plt.grid()
