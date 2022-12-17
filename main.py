@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 
+from Config import conf_blocks_num, n_fft, hop_length, win_length, window, size, conv_kernel_size
 from CudaDevice import CudaDataLoader, to_cuda
 from MixtureDataset import MixtureDataset
 from NetMetods import train, test
@@ -14,19 +15,21 @@ from Conformer import Conformer
 
 dataset = MixtureDataset(16000, (0, 10), 10)
 dataset.clean_speech_data_paths = dataset.clean_speech_data_paths[:10]
-dataset.noise_paths = dataset.noise_paths[:1]
+dataset.noise_paths = dataset.noise_paths[:2]
 
-data_loader = DataLoader(dataset, batch_size=2, shuffle=False)
-data_loader = CudaDataLoader(data_loader)
+data_loader_train = DataLoader(dataset, batch_size=10, shuffle=False)
+data_loader_valid = DataLoader(dataset, batch_size=10, shuffle=False)
+
+data_loader_train = CudaDataLoader(data_loader_train)
+data_loader_valid = CudaDataLoader(data_loader_valid)
 
 loss_fn = nn.L1Loss()
 
-n_fft = 1024  # TODO: вынести в конфиг параметры
-model = Conformer(n_fft, n_fft // 4, n_fft, 'hann_window', n_fft // 2, 12, 31)
+model = Conformer(n_fft, hop_length, win_length, window, size, conf_blocks_num, conv_kernel_size)
 to_cuda(model)
 
-optimizer = torch.optim.Adam(model.parameters(), betas=(0.9, 0.999), lr=1e-4)
+optimizer = torch.optim.Adam(model.parameters(), betas=(0.9, 0.999), lr=1e-3)
 
-train(model, optimizer, loss_fn, data_loader, epochs=15)
+train(model, optimizer, loss_fn, data_loader_train, data_loader_valid, 15*2, '/')
 
 test(model, dataset)
