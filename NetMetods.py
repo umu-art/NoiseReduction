@@ -10,10 +10,10 @@ from Config import SR
 from CudaDevice import to_cuda
 
 
-def train(model, optimizer, loss_fn, data_loader, epchs):
+def train(model, optimizer, loss_fn, data_loader, epochs):
     model.train()
     print('Training...')
-    for _ in tqdm(range(epchs)):
+    for _ in tqdm(range(epochs)):
         for mixture, clean in data_loader:
             wave = model(mixture)
             loss = loss_fn(wave, clean)

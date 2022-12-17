@@ -2,7 +2,7 @@ from torch import nn
 
 
 class DepthwiseConv(nn.Module):
-    def __init__(self, channels_in, channels_out, kernel_size, bias=True):
+    def __init__(self, channels_in: int, channels_out: int, kernel_size: int, bias=True):
         super().__init__()
         assert channels_out % channels_in == 0, 'channels_in must be a divisor of channels_out'
         assert (kernel_size % 2 != 0)
