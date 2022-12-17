@@ -19,7 +19,7 @@ class ConvModule(nn.Module):
         self.dropout = nn.Dropout(p=dropout_p)
 
     def forward(self, x):
-        start_x = x
+        # start_x = x # TODO: узнать по поводу этой строчки
         x = self.layer_norm(x)
         x = x.permute(0, 2, 1)
         x = self.pointwise_conv_first(x)
@@ -30,4 +30,5 @@ class ConvModule(nn.Module):
         x = self.pointwise_conv_second(x)
         x = self.dropout(x)
         x = x.permute(0, 2, 1)
-        return start_x + x
+        # return start_x + x # TODO: по поводу этой тоже узнать
+        return x
