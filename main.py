@@ -21,7 +21,8 @@ data_loader = CudaDataLoader(data_loader)
 
 loss_fn = nn.L1Loss()
 
-model = Conformer()
+n_fft = 1024  # TODO: вынести в конфиг параметры
+model = Conformer(n_fft, n_fft // 4, n_fft, 'hann_window', n_fft // 2, 12, 31)
 to_cuda(model)
 
 optimizer = torch.optim.Adam(model.parameters(), betas=(0.9, 0.999), lr=1e-3)
