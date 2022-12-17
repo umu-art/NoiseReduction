@@ -30,6 +30,6 @@ to_cuda(model)
 
 optimizer = torch.optim.Adam(model.parameters(), betas=(0.9, 0.999), lr=1e-3)
 
-train(model, optimizer, loss_fn, data_loader_train, data_loader_valid, 15*2, '/out.tar')
+train(model, optimizer, loss_fn, data_loader_train, data_loader_valid, 15*4, '/out.tar')
 
 test(model, dataset)
