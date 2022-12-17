@@ -4,7 +4,11 @@ from torch.utils.data import Dataset
 from tqdm import tqdm
 
 from AudioMetods import read_audio, calc_c
-from main import clean_speech_data_root, noise_root
+
+
+SR = 16000
+clean_speech_data_root = 'E:/LibriSpeech/train-clean-100/'
+noise_root = 'E:/musan/noise'
 
 
 class MixtureDataset(Dataset):

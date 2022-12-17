@@ -7,10 +7,11 @@ from MixtureDataset import MixtureDataset
 from NetMetods import train, test
 from NetModel import NetModel
 
-SR = 16000
+# wget https://www.openslr.org/resources/17/musan.tar.gz
+# wget https://www.openslr.org/resources/12/train-clean-100.tar.gz
+# tar -xf musan.tar.gz
+# tar -xf train-clean-100.tar.gz
 
-clean_speech_data_root = '/content/LibriSpeech/train-clean-100/'
-noise_root = 'E:/musan/noise'
 
 dataset = MixtureDataset(16000, (0, 10), 10000)
 dataset.clean_speech_data_paths = dataset.clean_speech_data_paths[:10000]
