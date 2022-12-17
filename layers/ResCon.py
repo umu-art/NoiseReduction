@@ -2,7 +2,7 @@ from torch import nn
 
 
 class ResCon(nn.Module):
-    def __init__(self, a, b, module):
+    def __init__(self, a: float, b: float, module: nn.Module):
         super().__init__()
         self.a = a
         self.b = b

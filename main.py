@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 from CudaDevice import CudaDataLoader, to_cuda
 from MixtureDataset import MixtureDataset
 from NetMetods import train, test
-from NetModel import NetModel
+from Conformer import Conformer
 
 # wget https://www.openslr.org/resources/17/musan.tar.gz
 # wget https://www.openslr.org/resources/12/train-clean-100.tar.gz
@@ -21,11 +21,11 @@ data_loader = CudaDataLoader(data_loader)
 
 loss_fn = nn.L1Loss()
 
-model = NetModel()
+model = Conformer()
 to_cuda(model)
 
 optimizer = torch.optim.Adam(model.parameters(), betas=(0.9, 0.999), lr=1e-3)
 
-train(model, optimizer, loss_fn, data_loader, epchs=30)
+train(model, optimizer, loss_fn, data_loader, epochs=30)
 
 test(model, dataset)
