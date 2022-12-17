@@ -8,7 +8,6 @@ from tqdm import tqdm
 from AudioMetods import ashow, calc_c, read_audio
 from CudaDevice import to_cuda
 
-
 SR = 16000
 
 
