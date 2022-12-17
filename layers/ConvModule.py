@@ -12,7 +12,7 @@ class ConvModule(nn.Module):
         self.layer_norm = nn.LayerNorm(in_channels)
         self.pointwise_conv_first = PointwiseConv(in_channels, in_channels * 2)
         self.glu = GLU(1)
-        self.depthwise_conv = DepthwiseConv(in_channels, in_channels,kernel_size)
+        self.depthwise_conv = DepthwiseConv(in_channels, in_channels, kernel_size)
         self.batch_norm = nn.BatchNorm1d(in_channels)
         self.swish = Swish()
         self.pointwise_conv_second = PointwiseConv(in_channels, in_channels)
@@ -31,4 +31,3 @@ class ConvModule(nn.Module):
         x = self.dropout(x)
         x = x.permute(0, 2, 1)
         return start_x + x
-
