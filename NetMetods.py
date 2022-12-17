@@ -7,7 +7,9 @@ from tqdm import tqdm
 
 from AudioMetods import ashow, calc_c, read_audio
 from CudaDevice import to_cuda
-from main import SR
+
+
+SR = 16000
 
 
 def train(model, optimizer, loss_fn, data_loader, epchs):

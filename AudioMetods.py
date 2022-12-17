@@ -5,7 +5,8 @@ from IPython.lib.display import Audio
 import soundfile as sf
 from matplotlib import pyplot as plt
 
-from main import SR
+
+SR = 16000
 
 
 def read_audio(path: str):
