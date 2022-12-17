@@ -31,10 +31,10 @@ class Conformer(nn.Module):
         self.i_stft = IStftLayer(n_fft, hop_length, win_length, window_)
 
     def forward(self, x):
-        x = self.stft(x)
-        x = self.lin_first(x)
+        spec, mag = self.stft(x)
+        x = self.lin_first(mag)
         for block in self.conf_blocks:
             x = block(x)
         x = self.lin_second(x)
-        x = self.i_stft(x)
+        x = self.i_stft(x, spec)
         return x

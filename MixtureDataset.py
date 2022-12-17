@@ -21,7 +21,7 @@ class MixtureDataset(Dataset):
         return audio[st:st + self.chunk_size]
 
     def __init__(self, chunk_size, snr_range, n_steps_per_epoch):
-        all_clean_speech_data_paths = glob(f'{clean_speech_data_root}/**/*.flac', recursive=True)
+        all_clean_speech_data_paths = glob(f'{clean_speech_data_root}/**/*.flac', recursive=True)[:5000] # TODO: error here
         all_noise_paths = glob(f'{noise_root}/**/*.wav', recursive=True)
 
         print('Init clean_speech_data')

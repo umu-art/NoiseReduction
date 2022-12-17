@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from tqdm import tqdm
 
-from AudioMetods import ashow, calc_c, read_audio
+from AudioMetods import ashow, calc_c, read_audio, save_audio
 from Config import SR
 from CudaDevice import to_cuda
 
@@ -20,7 +20,7 @@ def train(model, optimizer, loss_fn, data_loader, epochs):
             loss.backward()
             optimizer.step()
             optimizer.zero_grad()
-            # print(loss.item())
+            print(loss.item())
 
 
 def test(model, dataset):
@@ -35,7 +35,8 @@ def test(model, dataset):
     noise = noise[:len(audio)]
 
     mixture = audio + calc_c(audio, noise, 2) * noise
-    ashow(mixture)
+    save_audio('mix.wav', mixture)
+
 
     mixture = torch.from_numpy(mixture)
     add = math.ceil(mixture.shape[0] / SR) * SR - mixture.shape[0]
@@ -48,4 +49,4 @@ def test(model, dataset):
     model.test()
     wave = model(mixture)
     wave = wave.reshape([x_len])
-    ashow(wave.cpu().detach().numpy())
+    save_audio('wave.wav', wave.cpu().detach().numpy())
