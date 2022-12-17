@@ -20,6 +20,10 @@ def calc_energy(x: np.ndarray) -> float:
     return np.log10(np.sum(x ** 2, axis=1) / x.shape[1]) * 10
 
 
+def calc_snr(clean, noise):
+    return calc_energy(clean) - calc_energy(noise)
+
+
 def calc_c(clean: np.ndarray, noise: np.ndarray, snr: float) -> float:
     f = (calc_energy(clean) - calc_energy(noise) - snr) / 20
     return 10 ** f
