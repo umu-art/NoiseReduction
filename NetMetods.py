@@ -104,7 +104,7 @@ def train(model, optimizer, loss_fn, data_loader_train, data_loader_val, epochs,
         torch.save(snapshot, save_path)
 
 
-def test(model, dataset):
+def test(model, dataset, i):
     f = dataset.clean_speech_data_paths[randint(0, len(dataset.clean_speech_data_paths) - 1)]
     audio = read_audio(f)[0]
     # ashow(audio)
@@ -116,7 +116,7 @@ def test(model, dataset):
     noise = noise[:len(audio)]
 
     mixture = audio + calc_c(audio, noise, 2) * noise
-    save_audio('mix.wav', mixture)
+    save_audio('/content/out/mix' + str(i) + '.wav', mixture)
     # ashow(mixture)
 
     mixture = torch.from_numpy(mixture)
@@ -130,5 +130,5 @@ def test(model, dataset):
     model.eval()
     wave = model(mixture)
     wave = wave.reshape([x_len])
-    save_audio('wave.wav', wave.cpu().detach().numpy())
+    save_audio('/content/out/wave' + str(i) + '.wav', wave.cpu().detach().numpy())
     # ashow(wave.cpu().detach().numpy())
