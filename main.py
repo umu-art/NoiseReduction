@@ -13,7 +13,7 @@ from Conformer import Conformer
 # tar -xf musan.tar.gz
 # tar -xf train-clean-100.tar.gz
 
-dataset = MixtureDataset(16000, (0, 10), 1000)
+dataset = MixtureDataset(16000, (0, 10), 10000)
 dataset.clean_speech_data_paths = dataset.clean_speech_data_paths
 dataset.noise_paths = dataset.noise_paths[:20]
 

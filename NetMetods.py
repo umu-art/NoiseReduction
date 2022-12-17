@@ -16,7 +16,7 @@ def train_epoch(model, optimizer, loss_fn, data_loader):
     train_inp_snr = 0
     train_snr_i = 0
     train_loss = 0
-    for mixture, clean in data_loader:
+    for mixture, clean in tqdm(data_loader):
         wave = model(mixture)
         loss = loss_fn(wave, clean)
         loss.backward()
