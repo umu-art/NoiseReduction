@@ -14,11 +14,10 @@ class FeedForwardModule(nn.Module):
         self.dropout_second = nn.Dropout(p=dropout_p)
 
     def forward(self, x):
-        begin = x
         x = self.layer_norm(x)
         x = self.lin_first(x)
         x = self.swish(x)
         x = self.dropout_first(x)
         x = self.lin_second(x)
         x = self.dropout_second(x)
-        return x + begin
+        return x
