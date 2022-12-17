@@ -1,6 +1,8 @@
 import torch
 from torch import nn
 
+from Config import SR
+
 
 class IStftLayer(nn.Module):
     def __init__(self):
