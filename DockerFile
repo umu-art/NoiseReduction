@@ -3,7 +3,7 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app/
 
-RUN apt-get install libsndfile1
+RUN apt-get update &&  apt-get install -y libsndfile1
 RUN python -m venv /opt/venv
 # Enable venv
 ENV PATH="/opt/venv/bin:$PATH"
