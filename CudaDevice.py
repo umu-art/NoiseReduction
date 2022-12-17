@@ -3,7 +3,7 @@ import torch
 device = torch.device('cuda')
 if not torch.cuda.is_available():
     device = torch.device('cpu')
-    print('Not avaliable')
+    print('Not available')
 
 
 def to_cuda(data):
