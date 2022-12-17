@@ -1,14 +1,16 @@
 from torch import nn
 
 from layers.FeedForwardModule import FeedForwardModule
+from layers.attention import MultiHeadedSelfAttentionModule
+from layers.ConvModule import ConvModule
 
 
 class ConformerBlock(nn.Module):
-    def __init__(self, size: int):
+    def __init__(self, size: int, num_heads: int = 4):
         super().__init__()
         self.feed_forward_first = FeedForwardModule(size)
-        # self.multi_head = ... # TODO: добавить MultiHeadAttentionModule Саши
-        # self.conv = ConvolutionModule() # TODO: добавить ConvolutionModule
+        self.multi_head = MultiHeadedSelfAttentionModule(size, num_heads=num_heads)
+        self.conv = ConvModule()  # TODO: implement ConvolutionModule
         self.feed_forward_second = FeedForwardModule(size)
         self.layer_norm = nn.LayerNorm(size)
 
