@@ -7,7 +7,7 @@ from layers.PointwiseConv import PointwiseConv
 
 
 class ConvModule(nn.Module):
-    def __init__(self, in_channels, kernel_size, dropout_p: float = 0.1):
+    def __init__(self, in_channels, kernel_size, dropout_p):
         super().__init__()
         self.layer_norm = nn.LayerNorm(in_channels)
         self.pointwise_conv_first = PointwiseConv(in_channels, in_channels * 2)

@@ -33,6 +33,10 @@ def adisplay(x, sr=SR):
     display(Audio(x, rate=sr))
 
 
+def save_audio(file, x):
+    sf.write(file, x, SR)
+
+
 def ashow(x, sr=SR):
     adisplay(x, sr)
     plt.figure(figsize=(14, 5))

@@ -45,6 +45,7 @@ class RelativeMultiHeadAttention(nn.Module):
     Returns:
         - **outputs**: Tensor produces by relative multi head attention module.
     """
+
     def __init__(
             self,
             d_model: int = 512,
@@ -132,6 +133,7 @@ class MultiHeadedSelfAttentionModule(nn.Module):
     Returns:
         - **outputs** (batch, time, dim): Tensor produces by relative multi headed self attention module.
     """
+
     def __init__(self, d_model: int, num_heads: int, dropout_p: float = 0.1):
         super(MultiHeadedSelfAttentionModule, self).__init__()
         self.positional_encoding = PositionalEncoding(d_model)
