@@ -13,11 +13,11 @@ from Conformer import Conformer
 # tar -xf musan.tar.gz
 # tar -xf train-clean-100.tar.gz
 
-dataset = MixtureDataset(16000, (0, 10), 10)
-dataset.clean_speech_data_paths = dataset.clean_speech_data_paths[:10]
-dataset.noise_paths = dataset.noise_paths[:2]
+dataset = MixtureDataset(16000, (0, 10), 1000)
+dataset.clean_speech_data_paths = dataset.clean_speech_data_paths
+dataset.noise_paths = dataset.noise_paths[:20]
 
-data_loader_train = DataLoader(dataset, batch_size=10, shuffle=False)
+data_loader_train = DataLoader(dataset, batch_size=100, shuffle=False)
 data_loader_valid = DataLoader(dataset, batch_size=10, shuffle=False)
 
 data_loader_train = CudaDataLoader(data_loader_train)

@@ -117,7 +117,7 @@ def test(model, dataset):
 
     mixture = audio + calc_c(audio, noise, 2) * noise
     save_audio('mix.wav', mixture)
-    ashow(mixture)
+    # ashow(mixture)
 
     mixture = torch.from_numpy(mixture)
     add = math.ceil(mixture.shape[0] / SR) * SR - mixture.shape[0]
@@ -131,4 +131,4 @@ def test(model, dataset):
     wave = model(mixture)
     wave = wave.reshape([x_len])
     save_audio('wave.wav', wave.cpu().detach().numpy())
-    ashow(wave.cpu().detach().numpy())
+    # ashow(wave.cpu().detach().numpy())
