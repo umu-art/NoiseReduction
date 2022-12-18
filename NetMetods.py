@@ -5,10 +5,9 @@ import numpy as np
 import torch
 from tqdm.auto import tqdm
 
-from AudioMetods import ashow, calc_c, read_audio, calc_snr
+from AudioMetods import ashow, calc_c, read_audio, calc_snr, save_audio
 from Config import SR
 from CudaDevice import to_cuda
-
 
 def train_epoch(model, optimizer, loss_fn, data_loader):
     model.train()
@@ -103,11 +102,10 @@ def train(model, optimizer, loss_fn, data_loader_train, data_loader_val, epochs,
         torch.save(snapshot, save_path)
 
 
-'''
 def train(model, optimizer, loss_fn, data_loader, epchs):
     model.train()
     print('Training...')
-    for _ in tqdm(range(epchs)):
+    for _ in tqdm(range(epochs)):
         for mixture, clean in data_loader:
             wave = model(mixture)
             loss = loss_fn(wave, clean)
@@ -115,8 +113,6 @@ def train(model, optimizer, loss_fn, data_loader, epchs):
             optimizer.step()
             optimizer.zero_grad()
             # print(loss.item())
-'''
-
 
 def test(model, dataset):
     f = dataset.clean_speech_data_paths[randint(0, len(dataset.clean_speech_data_paths) - 1)]
@@ -130,7 +126,8 @@ def test(model, dataset):
     noise = noise[:len(audio)]
 
     mixture = audio + calc_c(audio, noise, 2) * noise
-    ashow(mixture)
+    save_audio('mix.wav', mixture)
+
 
     mixture = torch.from_numpy(mixture)
     add = math.ceil(mixture.shape[0] / SR) * SR - mixture.shape[0]
@@ -143,4 +140,4 @@ def test(model, dataset):
     model.test()
     wave = model(mixture)
     wave = wave.reshape([x_len])
-    ashow(wave.cpu().detach().numpy())
+    save_audio('wave.wav', wave.cpu().detach().numpy())

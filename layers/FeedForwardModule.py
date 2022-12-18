@@ -4,7 +4,7 @@ from activators.Swish import Swish
 
 
 class FeedForwardModule(nn.Module):
-    def __init__(self, size: int, dropout_p: float = 0.1, expansion_factor: int = 4):
+    def __init__(self, size: int, dropout_p: float, expansion_factor: int):
         super().__init__()
         self.layer_norm = nn.LayerNorm(size)
         self.lin_first = nn.Linear(size, size * expansion_factor)
