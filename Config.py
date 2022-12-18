@@ -1,5 +1,5 @@
 # бывший SR
-part_frames = 16_000
+part_frames = 16_000 * 3
 
 # Параметры Dataset
 clean_speech_data_root = 'E:/LibriSpeech/train-clean-100'
@@ -23,5 +23,5 @@ betas = (0.9, 0.999)
 lr = 1e-4
 batch_size = 4
 iters_per_epoch = 10
-epochs = 15
+epochs = 5
 save_path = 'out.tar'

@@ -7,11 +7,11 @@ from tqdm.auto import tqdm
 
 import Config
 import Logger
-from AudioMetods import calc_coefficient, read_audio, calc_snr, save_audio
+from AudioMetods import calc_coefficient, read_audio, calc_snr
 from CudaDevice import to_cuda
 
 
-def train_epoch(model, optimizer, loss_fn, data_loader, point: int):
+def train_epoch(model, optimizer, loss_fn, data_loader, point: int, gl_point: int):
     model.train()
     train_snr = 0
     train_inp_snr = 0
@@ -40,6 +40,7 @@ def train_epoch(model, optimizer, loss_fn, data_loader, point: int):
     train_inp_snr /= n
     train_snr_i /= n
 
+    Logger.write_epoch_point('train_epoch', gl_point, train_snr, train_inp_snr, train_snr_i, train_loss)
     return {"train_loss": train_loss,
             "train_snr": train_snr,
             "train_inp_snr": train_inp_snr,
@@ -48,7 +49,7 @@ def train_epoch(model, optimizer, loss_fn, data_loader, point: int):
 
 
 @torch.no_grad()
-def val_epoch(model, data_loader, loss_fn, point: int):
+def val_epoch(model, data_loader, loss_fn, point: int, gl_point: int):
     model.eval()
     val_snr = 0
     val_inp_snr = 0
@@ -73,6 +74,7 @@ def val_epoch(model, data_loader, loss_fn, point: int):
     val_loss /= n
     val_inp_snr /= n
     val_snr_i /= n
+    Logger.write_epoch_point('eval_epoch', gl_point, val_snr, val_inp_snr, val_snr_i, val_loss)
     return {"val_loss": val_loss,
             "val_snr": val_snr,
             "val_inp_snr": val_inp_snr,
@@ -94,8 +96,8 @@ def train(model, optimizer, loss_fn, data_loader_train, data_loader_val, epochs,
 
     print('Training...')
     for epoch in tqdm(range(epochs)):
-        cur_train = train_epoch(model, optimizer, loss_fn, data_loader_train, epoch * Config.iters_per_epoch)
-        cur_val = val_epoch(model, data_loader_val, loss_fn, epoch * Config.iters_per_epoch)
+        cur_train = train_epoch(model, optimizer, loss_fn, data_loader_train, epoch * Config.iters_per_epoch, epoch)
+        cur_val = val_epoch(model, data_loader_val, loss_fn, epoch * Config.iters_per_epoch, epoch)
 
         logs["train_loss"].append(cur_train["train_loss"])
         logs["train_snr"].append(cur_train["train_snr"])
@@ -117,11 +119,11 @@ def train(model, optimizer, loss_fn, data_loader_train, data_loader_val, epochs,
 
 
 def test(model, dataset, i):
-    f = dataset.clean_speech_data_paths[randint(0, len(dataset.clean_speech_data_paths) - 1)]
+    f = dataset.clean_dataset.audio_paths[randint(0, len(dataset.clean_dataset.audio_paths) - 1)]
     audio = read_audio(f)[0]
     # ashow(audio)
 
-    f = dataset.noise_paths[randint(0, len(dataset.noise_paths) - 1)]
+    f = dataset.noise_dataset.audio_paths[randint(0, len(dataset.noise_dataset.audio_paths) - 1)]
     noise = read_audio(f)[0]
     while len(noise) < len(audio):
         noise = np.concatenate((noise, noise))

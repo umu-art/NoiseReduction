@@ -22,4 +22,12 @@ def write_point(t: str, x: int, cur_snr, inp_snr, loss):
 
 
 def save_audio(audio, name):
-    writer.add_audio(name, audio, sample_rate=Config.part_frames)
+    writer.add_audio(name, audio, sample_rate=16000)
+
+
+def write_epoch_point(t: str, x: int, snr, inp_snr, snr_i, loss):
+    writer.add_scalars(t, {"snr": snr,
+                           "inp_snr": inp_snr,
+                           "snr_i": snr_i}, x)
+    writer.add_scalars('epch_loss', {t: loss}, x)
+    writer.flush()
