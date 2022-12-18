@@ -31,7 +31,7 @@ to_cuda(model)
 
 optimizer = torch.optim.Adam(model.parameters(), betas=Config.betas, lr=Config.lr)
 
-train(model, optimizer, loss_fn, data_loader_train, data_loader_valid, 15*4, Config.save_path)
+train(model, optimizer, loss_fn, data_loader_train, data_loader_valid, 15, Config.save_path)
 
 for i in range(10):
     test(model, dataset, i)

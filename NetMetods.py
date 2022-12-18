@@ -128,7 +128,7 @@ def test(model, dataset, i):
     noise = noise[:len(audio)]
 
     mixture = audio + calc_coefficient(audio, noise, 2) * noise
-    save_audio('/content/out/mix' + str(i) + '.wav', mixture)
+    Logger.save_audio(torch.from_numpy(mixture), 'mix_' + str(i))
     # ashow(mixture)
 
     mixture = torch.from_numpy(mixture)
@@ -142,5 +142,5 @@ def test(model, dataset, i):
     model.eval()
     wave = model(mixture)
     wave = wave.reshape([x_len])
-    save_audio('/content/out/wave' + str(i) + '.wav', wave.cpu().detach().numpy())
+    Logger.save_audio(wave.cpu().detach(), 'wave_' + str(i))
     # ashow(wave.cpu().detach().numpy())
