@@ -30,6 +30,7 @@ def train_epoch(model, optimizer, loss_fn, data_loader, point: int):
         train_snr += cur_snr
         train_inp_snr += inp_snr
         train_loss += loss.item()
+        train_snr_i += (cur_snr - inp_snr)
 
         Logger.write_point('train', point, cur_snr, inp_snr, loss.item())
         point += 1
