@@ -5,8 +5,8 @@ import numpy as np
 import torch
 from tqdm.auto import tqdm
 
+import Config
 from AudioMetods import calc_coefficient, read_audio, calc_snr, save_audio
-from Config import part_duration
 from CudaDevice import to_cuda
 
 
@@ -120,11 +120,11 @@ def test(model, dataset, i):
     # ashow(mixture)
 
     mixture = torch.from_numpy(mixture)
-    add = math.ceil(mixture.shape[0] / part_duration) * part_duration - mixture.shape[0]
+    add = math.ceil(mixture.shape[0] / Config.part_frames) * Config.part_frames - mixture.shape[0]
     tenz_add = torch.zeros([add])
     mixture = torch.cat([mixture, tenz_add])
     x_len = mixture.shape[0]
-    mixture = mixture.reshape([x_len // part_duration, part_duration])
+    mixture = mixture.reshape([x_len // Config.part_frames, Config.part_frames])
     mixture = to_cuda(mixture)
 
     model.eval()

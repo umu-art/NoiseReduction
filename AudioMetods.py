@@ -3,7 +3,7 @@ import numpy as np
 import soundfile as sf
 from matplotlib import pyplot as plt
 
-from Config import part_duration
+from Config import part_frames
 
 
 def read_audio_len(path: str):
@@ -16,8 +16,8 @@ def read_audio(path: str):
     return audio, samplerate, duration
 
 
-def read_part_audio(path: str, start: int, duration: int):
-    return sf.read(path, start=start, frames=duration)[0]
+def read_part_audio(path: str, start: int, frames: int):
+    return sf.read(path, start=start, frames=frames)[0]
 
 
 def calc_energy(x: np.ndarray) -> float:
@@ -36,10 +36,10 @@ def calc_coefficient(clean: np.ndarray, noise: np.ndarray, snr: float) -> float:
 
 
 def save_audio(file, x):
-    sf.write(file, x, part_duration)
+    sf.write(file, x, part_frames)
 
 
-def ashow(x, sr=part_duration):
+def ashow(x, sr=part_frames):
     plt.figure(figsize=(14, 5))
     librosa.display.specshow(librosa.amplitude_to_db(abs(librosa.stft(x)), ref=np.max), sr=sr, x_axis='s', y_axis='hz')
     plt.grid()
