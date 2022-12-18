@@ -3,7 +3,7 @@ from random import randint, uniform
 from torch.utils.data import Dataset
 from tqdm import tqdm
 
-from AudioMetods import read_audio, calc_c
+from AudioMetods import read_audio, calc_coefficient
 from Config import clean_speech_data_root, noise_root
 
 
@@ -25,10 +25,18 @@ class MixtureDataset(Dataset):
         all_noise_paths = glob(f'{noise_root}/**/*.wav', recursive=True)
 
         print('Init clean_speech_data')
-        self.clean_speech_data_paths = [u for u in tqdm(all_clean_speech_data_paths) if
-                                        len(read_audio(u)[0]) >= chunk_size]
+        self.clean_speech_data_paths = []
+        for u in tqdm(all_clean_speech_data_paths):
+            f = read_audio(u)
+            if len(f[0]) >= chunk_size:
+                self.clean_speech_data_paths.append(u)
+
         print('Init noise_data')
-        self.noise_paths = [u for u in tqdm(all_noise_paths) if len(read_audio(u)[0]) >= chunk_size]
+        self.noise_paths = []
+        for u in tqdm(all_noise_paths):
+            f = read_audio(u)
+            if len(f[0]) >= chunk_size:
+                self.noise_paths.append(u)
 
         assert len(self.clean_speech_data_paths) > 0
         assert len(self.noise_paths) > 0
@@ -44,5 +52,5 @@ class MixtureDataset(Dataset):
         clean = self.get_random_clean()
         noise = self.get_random_noise()
         snr = uniform(self.snr_range[0], self.snr_range[1])
-        mixture = clean + calc_c(clean, noise, snr) * noise
+        mixture = clean + calc_coefficient(clean, noise, snr) * noise
         return mixture, clean

@@ -1,6 +1,7 @@
 import torch
 from torch import nn
-from Config import SR
+
+from Config import part_duration
 
 
 class IStftLayer(nn.Module):
@@ -22,5 +23,5 @@ class IStftLayer(nn.Module):
         mask = mask.permute(0, 2, 1)
         spec_estimate = mask * spec
         wave_estimate = torch.istft(spec_estimate, n_fft=self.n_fft, hop_length=self.hop_length,
-                                    win_length=self.win_length, window=self.window, length=SR)
+                                    win_length=self.win_length, window=self.window, length=part_duration)
         return wave_estimate
