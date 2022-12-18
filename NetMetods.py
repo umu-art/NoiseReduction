@@ -22,8 +22,8 @@ def train_epoch(model, optimizer, loss_fn, data_loader):
         loss.backward()
         optimizer.step()
         optimizer.zero_grad()
-        cur_snr = calc_snr(wave.numpy(), clean.numpy()).mean()
-        inp_snr = calc_snr(mixture.numpy(), clean.numpy()).mean()
+        cur_snr = calc_snr(clean.numpy(), wave.numpy() - clean.numpy()).mean()
+        inp_snr = calc_snr(clean.numpy(), mixture.numpy() - clean.numpy()).mean()
         train_snr += cur_snr
         train_inp_snr += inp_snr
         train_loss += loss.item()
@@ -51,8 +51,8 @@ def val_epoch(model, data_loader, loss_fn):
         wave = model(mixture)
         loss = loss_fn(wave, clean)
 
-        cur_snr = calc_snr(wave.numpy(), clean.numpy()).mean()
-        inp_snr = calc_snr(mixture.numpy(), clean.numpy()).mean()
+        cur_snr = calc_snr(clean.numpy(), wave.numpy() - clean.numpy()).mean()
+        inp_snr = calc_snr(clean.numpy(), mixture.numpy() - clean.numpy()).mean()
         val_snr += cur_snr
         val_inp_snr += inp_snr
         val_loss += loss.item()
