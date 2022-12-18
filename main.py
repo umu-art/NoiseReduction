@@ -1,4 +1,5 @@
 import torch
+import Logger
 import torch.nn as nn
 from torch.utils.data import DataLoader
 
@@ -25,11 +26,16 @@ loss_fn = nn.L1Loss()
 
 model = Conformer(Config.n_fft, Config.hop_length, Config.win_length, Config.window,
                   Config.size, Config.conf_blocks_num, Config.conv_kernel_size)
+
 to_cuda(model)
 
 optimizer = torch.optim.Adam(model.parameters(), betas=Config.betas, lr=Config.lr)
 
-train(model, optimizer, loss_fn, data_loader_train, data_loader_valid, 15*4, '/out.tar')
+train(model, optimizer, loss_fn, data_loader_train, data_loader_valid, 15*4, Config.save_path)
 
 for i in range(10):
     test(model, dataset, i)
+
+while True:
+    if input() == 'finish':
+        break

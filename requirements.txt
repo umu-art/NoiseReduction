@@ -5,3 +5,4 @@ librosa~=0.9.2
 soundfile~=0.11.0
 ipython~=8.7.0
 matplotlib~=3.6.2
+tensorboard~=2.9.0

@@ -21,6 +21,7 @@ conv_kernel_size = 31
 # Параметры обучения
 betas = (0.9, 0.999)
 lr = 1e-4
-batch_size = 100
+batch_size = 4
 iters_per_epoch = 10
 epochs = 15
+save_path = 'out.tar'
