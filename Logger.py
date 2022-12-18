@@ -16,7 +16,7 @@ writer = SummaryWriter("log")
 
 def write_point(t: str, x: int, cur_snr, inp_snr, loss):
     writer.add_scalars(t, {'cur_snr': cur_snr,
-                              'inp_snr': inp_snr}, x)
+                           'inp_snr': inp_snr}, x)
     writer.add_scalars('loss', {t: loss}, x)
     writer.flush()
 
