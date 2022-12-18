@@ -1,7 +1,7 @@
 from torch import nn
 
 from layers.FeedForwardModule import FeedForwardModule
-from layers.attention import MultiHeadedSelfAttentionModule
+from layers.AttentionLayer import MultiHeadedSelfAttentionModule
 from layers.ConvModule import ConvModule
 from layers.ResCon import ResCon
 
