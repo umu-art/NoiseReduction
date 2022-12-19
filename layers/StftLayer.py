@@ -16,6 +16,13 @@ class StftLayer(torch.nn.Module):
             print('wrong argument "window"')
             raise
 
+    """
+        Аргументы: 
+            x (torch.tensor): входные данные
+        Возвращает:
+            out (torch.tensor): данный массив, прогнанный через все нужные слои
+    """
+
     def forward(self, mix):
         spec = torch.stft(mix, n_fft=self.n_fft, hop_length=self.hop_length, win_length=self.win_length,
                           window=self.window, return_complex=self.return_complex)

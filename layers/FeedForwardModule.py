@@ -13,6 +13,13 @@ class FeedForwardModule(nn.Module):
         self.lin_second = nn.Linear(size * expansion_factor, size)
         self.dropout_second = nn.Dropout(p=dropout_p)
 
+    """
+        Аргументы: 
+            x (torch.tensor): входные данные
+        Возвращает:
+            out (torch.tensor): данный массив, прогнанный через все нужные слои
+    """
+
     def forward(self, x):
         x = self.layer_norm(x)
         x = self.lin_first(x)
