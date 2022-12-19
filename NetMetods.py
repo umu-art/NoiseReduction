@@ -146,6 +146,6 @@ def test(model, dataset, i):
     mixture = to_cuda(mixture)
 
     model.eval()
-    wave = model(mixture)
+    wave = model(mixture[None])[0]
     Logger.save_audio(wave.cpu().detach(), 'wave_' + str(i))
     # ashow(wave.cpu().detach().numpy())
