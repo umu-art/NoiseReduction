@@ -53,6 +53,9 @@ class RelativeMultiHeadAttention(nn.Module):
             dropout_p: float = 0.1,
     ):
         super(RelativeMultiHeadAttention, self).__init__()
+        if d_model % num_heads != 0:
+            print(d_model, num_heads)
+            assert False
         assert d_model % num_heads == 0, "d_model % num_heads should be zero."
         self.d_model = d_model
         self.d_head = int(d_model / num_heads)

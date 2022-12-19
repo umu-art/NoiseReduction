@@ -18,10 +18,12 @@ from datasets.MixDataset import MixDataset
 if __name__ == '__main__':
     print(torch.__version__)
 
-    dataset = MixDataset(Config.snr_range, Config.iters_per_epoch * Config.batch_size)
+    dataset_train = MixDataset(Config.snr_range, Config.iters_per_epoch * Config.batch_size)
+    dataset_eval = MixDataset(Config.snr_range, Config.iters_per_epoch * Config.batch_size,
+                              noise_pattern_=Config.noise_eval_pattern)
 
-    data_loader_train = DataLoader(dataset, batch_size=Config.batch_size, shuffle=False)
-    data_loader_valid = DataLoader(dataset, batch_size=Config.batch_size, shuffle=False)
+    data_loader_train = DataLoader(dataset_train, batch_size=Config.batch_size, shuffle=False)
+    data_loader_valid = DataLoader(dataset_eval, batch_size=Config.batch_size, shuffle=False)
 
     data_loader_train = CudaDataLoader(data_loader_train)
     data_loader_valid = CudaDataLoader(data_loader_valid)
@@ -29,7 +31,7 @@ if __name__ == '__main__':
     loss_fn = nn.L1Loss()
 
     model = Conformer(Config.n_fft, Config.hop_length, Config.win_length, Config.window,
-                      Config.size, Config.conf_blocks_num, Config.conv_kernel_size, Config.clip_val)
+                      Config.size, Config.conf_blocks_num, Config.conv_kernel_size)
 
     to_cuda(model)
 
@@ -39,10 +41,10 @@ if __name__ == '__main__':
                                  warmup_epochs=Config.warmup_epochs, warmup_lr_init=Config.start_lr,
                                  min_lr=Config.min_lr)
 
-    train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_valid, Config.epochs, Config.save_path)
+    train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_valid, Config.epochs, Config.save_path, Config.clip_val)
 
     for i in range(10):
-        test(model, dataset, i)
+        test(model, data_loader_valid, i)
 
     while True:
         if input() == 'finish':

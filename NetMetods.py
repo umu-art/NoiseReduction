@@ -87,7 +87,7 @@ def val_epoch(model, data_loader, loss_fn, point: int, gl_point: int):
             "val_snr_i": val_snr_i}
 
 
-def train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_val, epochs, save_path):
+def train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_val, epochs, save_path, clip_val: int):
     # save_path .tar
     logs = {
         "train_loss": [],
@@ -102,7 +102,7 @@ def train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_v
 
     print('Training...')
     for epoch in tqdm(range(epochs)):
-        cur_train = train_epoch(model, optimizer, scheduler, loss_fn, data_loader_train, epoch * Config.iters_per_epoch, epoch)
+        cur_train = train_epoch(model, optimizer, scheduler, loss_fn, data_loader_train, epoch * Config.iters_per_epoch, epoch, clip_val)
         cur_val = val_epoch(model, data_loader_val, loss_fn, epoch * Config.iters_per_epoch, epoch)
 
         logs["train_loss"].append(cur_train["train_loss"])
@@ -143,12 +143,9 @@ def test(model, dataset, i):
     add = math.ceil(mixture.shape[0] / Config.part_frames) * Config.part_frames - mixture.shape[0]
     tenz_add = torch.zeros([add])
     mixture = torch.cat([mixture, tenz_add])
-    x_len = mixture.shape[0]
-    mixture = mixture.reshape([x_len // Config.part_frames, Config.part_frames])
     mixture = to_cuda(mixture)
 
     model.eval()
     wave = model(mixture)
-    wave = wave.reshape([x_len])
     Logger.save_audio(wave.cpu().detach(), 'wave_' + str(i))
     # ashow(wave.cpu().detach().numpy())
