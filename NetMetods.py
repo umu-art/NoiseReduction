@@ -11,7 +11,7 @@ from AudioMetods import calc_coefficient, read_audio, calc_snr
 from CudaDevice import to_cuda
 
 
-def train_epoch(model, optimizer, loss_fn, data_loader, point: int, gl_point: int):
+def train_epoch(model, optimizer, loss_fn, data_loader, point: int, gl_point: int, clip_val=5):
     model.train()
     train_snr = 0
     train_inp_snr = 0
@@ -21,6 +21,7 @@ def train_epoch(model, optimizer, loss_fn, data_loader, point: int, gl_point: in
         wave = model(mixture)
         loss = loss_fn(wave, clean)
         loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), clip_val)
         optimizer.step()
         optimizer.zero_grad()
         cur_snr = calc_snr(clean.detach().cpu().numpy(),
