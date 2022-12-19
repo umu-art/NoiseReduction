@@ -19,5 +19,12 @@ class PointwiseConv(nn.Module):
 
         self.conv = nn.Conv1d(channels_in, channels_out, 1, bias=bias)
 
+    """
+        Аргументы: 
+            x (torch.tensor): входные данные
+        Возвращает:
+            out (torch.tensor): данный массив, прогнанный через все нужные слои
+    """
+
     def forward(self, x):
         return self.conv(x)

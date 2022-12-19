@@ -38,7 +38,7 @@ def write_epoch_point(t: str, x: int, snr, inp_snr, snr_i, loss):
     writer.add_scalars(t, {"snr": snr,
                            "inp_snr": inp_snr,
                            "snr_i": snr_i}, x)
-    writer.add_scalars('epch_loss', {t: loss}, x)
+    writer.add_scalars('epoch_loss', {t: loss}, x)
     writer.flush()
 
 

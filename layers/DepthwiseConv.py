@@ -20,5 +20,12 @@ class DepthwiseConv(nn.Module):
         assert (kernel_size % 2 != 0)
         self.conv = nn.Conv1d(channels_in, channels_out, kernel_size, padding='same', groups=channels_in, bias=bias)
 
+    """
+        Аргументы: 
+            x (torch.tensor): входные данные
+        Возвращает:
+            out (torch.tensor): данный массив, прогнанный через все нужные слои
+    """
+
     def forward(self, x):
         return self.conv(x)

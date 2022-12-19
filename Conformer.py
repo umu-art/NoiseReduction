@@ -32,7 +32,7 @@ class Conformer(nn.Module):
         self.i_stft = IStftLayer(n_fft, hop_length, win_length, window_)
 
     def forward(self, x):
-        length = x.shape[-1]  # TODO: спорный момент
+        length = x.shape[-1]
         spec, mag = self.stft(x)
         x = self.layer_norm(mag)
         x = self.lin_first(x)

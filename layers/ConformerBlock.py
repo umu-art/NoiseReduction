@@ -7,6 +7,19 @@ from layers.ResCon import ResCon
 
 
 class ConformerBlock(nn.Module):
+    """
+    Аргументы:
+        size (int): размер входных данных
+        conv_kernel_size (int): размер свертки, используемый в слое ConvModule.py
+        num_heads (int): Количество heads в AttentionLayer.py
+        expansion_factor (int): множитель в линейном слое
+        dropout_conv (float): вероятность dropout'а в слое ConvModule.py
+        dropout_feed_forward (int): вероятность dropout'а в слое FeedForwardModule.py
+        dropout_multi_head (float): вероятность dropout'а в слое MultiHeadedSelfAttentionModule.py
+    Возвращает:
+        Объект типа ConformerBlock
+    """
+
     def __init__(self, size: int, conv_kernel_size: int, num_heads: int,
                  expansion_factor: int,
                  dropout_conv: float, dropout_feed_forward: float, dropout_multi_head: float):
@@ -20,6 +33,13 @@ class ConformerBlock(nn.Module):
         self.res_feed_forward_second = ResCon(1, 0.5, FeedForwardModule(size, dropout_p=dropout_feed_forward,
                                                                         expansion_factor=expansion_factor))
         self.layer_norm = nn.LayerNorm(size)
+
+    """
+    Аргументы: 
+        x (torch.tensor): входные данные
+    Возвращает:
+        out (torch.tensor): данный массив, прогнанный через все нужные слои
+    """
 
     def forward(self, x):
         x = self.res_feed_forward_first(x)
