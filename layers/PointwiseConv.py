@@ -3,7 +3,7 @@ from torch import nn
 
 class PointwiseConv(nn.Module):
     """
-        PointwiseConv - свертка, которая использует 1x1.
+        PointwiseConv - свертка, которая использует ядро размера 1.
         Аргументы:
             channels_in (int) - кол-во входных каналов
             channels_out (int) - кол-во выходных каналов
