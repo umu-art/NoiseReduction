@@ -7,7 +7,7 @@ noise_root = 'E:/musan/noise'
 clean_pattern = f'{clean_speech_data_root}/**/*.flac'
 noise_pattern = f'{noise_root}/**/*.wav'
 cache_folder = 'cache/'
-snr_range = (2, 10)
+snr_range = (2, 5)
 
 # Параметры модели
 n_fft = 1024
@@ -19,9 +19,16 @@ conf_blocks_num = 12
 conv_kernel_size = 31
 
 # Параметры обучения
-betas = (0.9, 0.999)
-lr = 1e-4
 batch_size = 4
-iters_per_epoch = 10
-epochs = 5
+iters_per_epoch = 1024
+epochs = 2
+clip_val = 5
 save_path = 'out.tar'
+
+# Параметры scheduler
+start_lr = 1e-5
+warmup_epochs = 10
+step_size = 10
+gamma = 0.99
+min_lr = 1e-5
+opt_lr = 1e-3

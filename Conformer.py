@@ -34,8 +34,8 @@ class Conformer(nn.Module):
     def forward(self, x):
         length = x.shape[-1]  # TODO: спорный момент
         spec, mag = self.stft(x)
-        x = self.lin_first(mag)
-        x = self.layer_norm(x)  # TODO: Саша, чекни что все норм
+        x = self.layer_norm(mag)
+        x = self.lin_first(x)
         for block in self.conf_blocks:
             x = block(x)
         x = self.lin_second(x)

@@ -3,6 +3,7 @@ from random import randint
 
 import numpy as np
 import torch
+from torch import optim, nn
 from tqdm.auto import tqdm
 
 import Config
@@ -11,7 +12,8 @@ from AudioMetods import calc_coefficient, read_audio, calc_snr
 from CudaDevice import to_cuda
 
 
-def train_epoch(model, optimizer, loss_fn, data_loader, point: int, gl_point: int, clip_val=5):
+def train_epoch(model: nn.Module, optimizer: optim, scheduler: optim.lr_scheduler, loss_fn: nn.Module, data_loader,
+                point: int, gl_point: int, clip_val: int):
     model.train()
     train_snr = 0
     train_inp_snr = 0
@@ -21,8 +23,11 @@ def train_epoch(model, optimizer, loss_fn, data_loader, point: int, gl_point: in
         wave = model(mixture)
         loss = loss_fn(wave, clean)
         loss.backward()
-        torch.nn.utils.clip_grad_norm_(model.parameters(), clip_val)
+        Logger.write_grad_norm(float(torch.nn.utils.clip_grad_norm_(model.parameters(), clip_val)), point)
         optimizer.step()
+
+        Logger.write_lr(scheduler.get_last_lr(), point)
+        scheduler.step()
         optimizer.zero_grad()
         cur_snr = calc_snr(clean.detach().cpu().numpy(),
                            wave.detach().cpu().numpy() - clean.detach().cpu().numpy()).mean()
@@ -82,7 +87,7 @@ def val_epoch(model, data_loader, loss_fn, point: int, gl_point: int):
             "val_snr_i": val_snr_i}
 
 
-def train(model, optimizer, loss_fn, data_loader_train, data_loader_val, epochs, save_path):
+def train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_val, epochs, save_path):
     # save_path .tar
     logs = {
         "train_loss": [],
@@ -97,7 +102,7 @@ def train(model, optimizer, loss_fn, data_loader_train, data_loader_val, epochs,
 
     print('Training...')
     for epoch in tqdm(range(epochs)):
-        cur_train = train_epoch(model, optimizer, loss_fn, data_loader_train, epoch * Config.iters_per_epoch, epoch)
+        cur_train = train_epoch(model, optimizer, scheduler, loss_fn, data_loader_train, epoch * Config.iters_per_epoch, epoch)
         cur_val = val_epoch(model, data_loader_val, loss_fn, epoch * Config.iters_per_epoch, epoch)
 
         logs["train_loss"].append(cur_train["train_loss"])

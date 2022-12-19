@@ -2,8 +2,6 @@ import tensorboard.plugins.core.core_plugin
 from tensorboard import program
 from torch.utils.tensorboard import SummaryWriter
 
-import Config
-
 tensorboard.plugins.core.core_plugin.DEFAULT_PORT = 1771
 
 tb = program.TensorBoard()
@@ -30,4 +28,14 @@ def write_epoch_point(t: str, x: int, snr, inp_snr, snr_i, loss):
                            "inp_snr": inp_snr,
                            "snr_i": snr_i}, x)
     writer.add_scalars('epch_loss', {t: loss}, x)
+    writer.flush()
+
+
+def write_lr(lr, x):
+    writer.add_scalars('lr', {'.': lr[0]}, x)
+    writer.flush()
+
+
+def write_grad_norm(grad_norm, x):
+    writer.add_scalars('grad_norm', {'.': grad_norm}, x)
     writer.flush()

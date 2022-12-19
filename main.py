@@ -6,6 +6,7 @@ import Config
 from CudaDevice import CudaDataLoader, to_cuda
 from NetMetods import train, test
 from Conformer import Conformer
+from Sheduler import StepLRWithWarmup
 from datasets.MixDataset import MixDataset
 
 # wget https://www.openslr.org/resources/17/musan.tar.gz
@@ -14,7 +15,7 @@ from datasets.MixDataset import MixDataset
 # tar -xf musan.tar.gz
 # tar -xf train-clean-100.tar.gz
 
-if __name__ == 'main':
+if __name__ == '__main__':
     print(torch.__version__)
 
     dataset = MixDataset(Config.snr_range, Config.iters_per_epoch * Config.batch_size)
@@ -28,13 +29,17 @@ if __name__ == 'main':
     loss_fn = nn.L1Loss()
 
     model = Conformer(Config.n_fft, Config.hop_length, Config.win_length, Config.window,
-                      Config.size, Config.conf_blocks_num, Config.conv_kernel_size, Config.length)
+                      Config.size, Config.conf_blocks_num, Config.conv_kernel_size, Config.clip_val)
 
     to_cuda(model)
 
-    optimizer = torch.optim.Adam(model.parameters(), betas=Config.betas, lr=Config.lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=Config.opt_lr)
 
-    train(model, optimizer, loss_fn, data_loader_train, data_loader_valid, Config.epochs, Config.save_path)
+    scheduler = StepLRWithWarmup(optimizer, step_size=Config.step_size, gamma=Config.gamma,
+                                 warmup_epochs=Config.warmup_epochs, warmup_lr_init=Config.start_lr,
+                                 min_lr=Config.min_lr)
+
+    train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_valid, Config.epochs, Config.save_path)
 
     for i in range(10):
         test(model, dataset, i)
