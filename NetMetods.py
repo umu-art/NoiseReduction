@@ -14,6 +14,20 @@ from CudaDevice import to_cuda
 
 def train_epoch(model: nn.Module, optimizer: optim, scheduler: optim.lr_scheduler, loss_fn: nn.Module, data_loader,
                 point: int, gl_point: int, clip_val: int):
+    """
+        Аргументы:
+            optimizer - оптимайзер
+            scheduler - объкт для динамического изменения learning rate
+            loss_fn - функция потерь
+            data_loader - датасет для тренировки
+            point - итерация
+            gl_point - итерация эпохи
+            clip_val - max значения для параметров для нормализации
+        Вход:
+            model - модель для обучения
+        Выход:
+            **output** (dict) - словарь со данными про SNR и ф-ию потерь
+    """
     model.train()
     train_snr = 0
     train_inp_snr = 0
@@ -56,6 +70,17 @@ def train_epoch(model: nn.Module, optimizer: optim, scheduler: optim.lr_schedule
 
 @torch.no_grad()
 def val_epoch(model, data_loader, loss_fn, point: int, gl_point: int):
+    """
+        Аргументы:
+            loss_fn - функция потерь
+            data_loader - реальный датасет
+            point - итерация
+            gl_point - итерация эпохи
+        Вход:
+            model - модель для обучения
+        Выход:
+            **output** (dict) - словарь со данными про SNR и ф-ию потерь
+    """
     model.eval()
     val_snr = 0
     val_inp_snr = 0
@@ -88,6 +113,21 @@ def val_epoch(model, data_loader, loss_fn, point: int, gl_point: int):
 
 
 def train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_val, dataset_valid, epochs, save_path, clip_val: int):
+    """
+        Аргументы:
+            optimizer - оптимайзер
+            scheduler - объкт для динамического изменения learning rate
+            loss_fn - функция потерь
+            data_loader_train - датасет для тренировки
+            data_loader_vak - датасет для оценки решения
+            epochs - кол-во эпох
+            save_path - куда сохранять путь
+            clip_val - max значения для параметров для нормализации
+        Вход:
+            model - модель для обучения
+        Выход:
+            ничего
+    """
     # save_path .tar
     logs = {
         "train_loss": [],
