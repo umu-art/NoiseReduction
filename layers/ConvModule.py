@@ -7,6 +7,15 @@ from layers.PointwiseConv import PointwiseConv
 
 
 class ConvModule(nn.Module):
+    """
+        Аргументы:
+            in_channels (int): количество входных каналов
+            out_channels (int): количество выходных каналов
+            dropout_p (float): вероятность dropout'a
+        Выход:
+            объект типа ConvModule
+    """
+
     def __init__(self, in_channels: int, kernel_size: int, dropout_p: float):
         super().__init__()
         self.layer_norm = nn.LayerNorm(in_channels)
@@ -17,6 +26,13 @@ class ConvModule(nn.Module):
         self.swish = Swish()
         self.pointwise_conv_second = PointwiseConv(in_channels, in_channels)
         self.dropout = nn.Dropout(p=dropout_p)
+
+    """
+        Аргументы: 
+            x (torch.tensor): входные данные
+        Возвращает:
+            out (torch.tensor): данный массив, прогнанный через все нужные слои
+    """
 
     def forward(self, x):
         x = self.layer_norm(x)

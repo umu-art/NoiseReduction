@@ -17,6 +17,13 @@ class IStftLayer(nn.Module):
             print('wrong argument "window"')
             raise
 
+    """
+        Аргументы: 
+            x (torch.tensor): входные данные
+        Возвращает:
+            out (torch.tensor): данный массив, прогнанный через все нужные слои
+    """
+
     def forward(self, mask, spec, length: int):
         mask = mask.permute(0, 2, 1)
         spec_estimate = mask * spec
