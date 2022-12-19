@@ -19,6 +19,7 @@ class Conformer(nn.Module):
         self.f = (n_fft // 2) + 1
 
         self.stft = StftLayer(n_fft, hop_length, win_length, window_)
+        self.layer_norm = nn.LayerNorm(self.f, self.f)
         self.lin_first = nn.Linear(self.f, size)
         self.conf_blocks = nn.ModuleList(
             [ConformerBlock(size=size, num_heads=num_heads,
@@ -31,10 +32,12 @@ class Conformer(nn.Module):
         self.i_stft = IStftLayer(n_fft, hop_length, win_length, window_)
 
     def forward(self, x):
+        length = x.shape[-1]  # TODO: спорный момент
         spec, mag = self.stft(x)
         x = self.lin_first(mag)
+        x = self.layer_norm(x)  # TODO: Саша, чекни что все норм
         for block in self.conf_blocks:
             x = block(x)
         x = self.lin_second(x)
-        x = self.i_stft(x, spec)
+        x = self.i_stft(x, spec, length)
         return x
