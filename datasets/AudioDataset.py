@@ -34,7 +34,11 @@ class AudioDataset:
         self.steps_per_epoch = steps_per_epoch
 
     def get(self):
-        index = randint(0, len(self.audio_paths) - 1)
-        start = randint(0, self.count_frames[index] - self.chunk_size)
-        audio = read_part_audio(self.audio_paths[index], start, self.chunk_size)
-        return audio
+        while True:
+            try:
+                index = randint(0, len(self.audio_paths) - 1)
+                start = randint(0, self.count_frames[index] - self.chunk_size)
+                audio = read_part_audio(self.audio_paths[index], start, self.chunk_size)
+                return audio
+            finally:
+                pass
