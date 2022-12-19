@@ -41,10 +41,12 @@ if __name__ == '__main__':
                                  warmup_epochs=Config.warmup_epochs, warmup_lr_init=Config.start_lr,
                                  min_lr=Config.min_lr)
 
-    train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_valid, Config.epochs, Config.save_path, Config.clip_val)
+    train(model, optimizer, scheduler, loss_fn,
+          data_loader_train, data_loader_valid, dataset_eval,
+          Config.epochs, Config.save_path, Config.clip_val)
 
     for i in range(10):
-        test(model, dataset_eval, i)
+        test(model, dataset_eval, 'finish_' + str(i))
 
     while True:
         if input() == 'finish':

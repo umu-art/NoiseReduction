@@ -3,9 +3,9 @@ part_frames = 16_000 * 3
 
 # Параметры Dataset
 prefix_root = 'E:/'
-clean_speech_data_root = 'E:/LibriSpeech/train-clean-100'
-noise_root = 'E:/musan/noise'
-noise_eval_root = 'E:/DEMAND'
+clean_speech_data_root = f'{prefix_root}LibriSpeech/train-clean-100'
+noise_root = f'{prefix_root}musan/noise'
+noise_eval_root = f'{prefix_root}DEMAND'
 clean_pattern = f'{clean_speech_data_root}/**/*.flac'
 noise_pattern = f'{noise_root}/**/*.wav'
 noise_eval_pattern = f'{noise_eval_root}/**/*.wav'

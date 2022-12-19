@@ -87,7 +87,7 @@ def val_epoch(model, data_loader, loss_fn, point: int, gl_point: int):
             "val_snr_i": val_snr_i}
 
 
-def train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_val, epochs, save_path, clip_val: int):
+def train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_val, dataset_valid, epochs, save_path, clip_val: int):
     # save_path .tar
     logs = {
         "train_loss": [],
@@ -104,6 +104,8 @@ def train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_v
     for epoch in tqdm(range(epochs)):
         cur_train = train_epoch(model, optimizer, scheduler, loss_fn, data_loader_train, epoch * Config.iters_per_epoch, epoch, clip_val)
         cur_val = val_epoch(model, data_loader_val, loss_fn, epoch * Config.iters_per_epoch, epoch)
+        for _ in range(3):
+            test(model, dataset_valid, 'epoch_' + str(epoch))
 
         logs["train_loss"].append(cur_train["train_loss"])
         logs["train_snr"].append(cur_train["train_snr"])
@@ -124,7 +126,7 @@ def train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_v
         torch.save(snapshot, save_path)
 
 
-def test(model, dataset, i):
+def test(model, dataset, i: str):
     f = dataset.clean_dataset.audio_paths[randint(0, len(dataset.clean_dataset.audio_paths) - 1)]
     audio = read_audio(f)[0]
     # ashow(audio)
@@ -136,7 +138,7 @@ def test(model, dataset, i):
     noise = noise[:len(audio)]
 
     mixture = audio + calc_coefficient(audio, noise, 2) * noise
-    Logger.save_audio(torch.from_numpy(mixture), 'mix_' + str(i))
+    Logger.save_audio(torch.from_numpy(mixture), str(i) + '_mix')
     # ashow(mixture)
 
     mixture = torch.from_numpy(mixture)
@@ -147,5 +149,5 @@ def test(model, dataset, i):
 
     model.eval()
     wave = model(mixture[None])[0]
-    Logger.save_audio(wave.cpu().detach(), 'wave_' + str(i))
+    Logger.save_audio(wave.cpu().detach(), str(i) + '_wave')
     # ashow(wave.cpu().detach().numpy())
