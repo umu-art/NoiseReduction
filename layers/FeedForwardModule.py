@@ -4,6 +4,19 @@ from activators.Swish import Swish
 
 
 class FeedForwardModule(nn.Module):
+
+    """
+        FeedForwardModule - просто объединяет все слои.
+        Аргументы:
+            size (int) - размер входных данных
+            dropout_p (float) - вероятность обнуления элемента
+            expansion_factor (int) - коэффициент количества доп. каналов
+        Вход:
+            x (tensor) - входной тензор
+        Выход:
+            **output** - тензор после применения всех слоёв
+    """
+
     def __init__(self, size: int, dropout_p: float, expansion_factor: int):
         super().__init__()
         self.layer_norm = nn.LayerNorm(size)
