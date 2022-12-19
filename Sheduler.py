@@ -6,6 +6,17 @@ class StepLRWithWarmup(torch.optim.lr_scheduler._LRScheduler):
     def __init__(self, optimizer, step_size, gamma=0.1, warmup_epochs=3, warmup_lr_init=1e-5,
                  min_lr=1e-5,
                  last_epoch=-1, verbose=False):
+        """
+        arguments:
+        :param optimizer: optimizer
+        :param step_size(int):
+        :param gamma(float): step reduction ratio
+        :param warmup_epochs(int): number of warmup epochs
+        :param warmup_lr_init: min warmup length of step
+        :param min_lr(float): min length of step
+        :param last_epoch(int): number of last epoch
+        :param verbose: mode of operation of the optimizer
+        """
         self.step_size = step_size
         self.gamma = gamma
         self.warmup_epochs = warmup_epochs
@@ -14,6 +25,9 @@ class StepLRWithWarmup(torch.optim.lr_scheduler._LRScheduler):
         super().__init__(optimizer, last_epoch, verbose)
 
     def get_lr(self):
+        """
+        :return: step length
+        """
         if self.last_epoch == 0:
             return [self.warmup_lr_init for _ in self.optimizer.param_groups]
         if self.last_epoch < self.warmup_epochs:
