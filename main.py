@@ -44,7 +44,7 @@ if __name__ == '__main__':
     train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_valid, Config.epochs, Config.save_path, Config.clip_val)
 
     for i in range(10):
-        test(model, data_loader_valid, i)
+        test(model, dataset_eval, i)
 
     while True:
         if input() == 'finish':
