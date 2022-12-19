@@ -1,8 +1,6 @@
 import torch
 from torch import nn
 
-from Config import part_frames
-
 
 class IStftLayer(nn.Module):
     def __init__(self, n_fft: int, hop_length: int, win_length: int, window: str, return_complex: bool = True):
@@ -19,9 +17,9 @@ class IStftLayer(nn.Module):
             print('wrong argument "window"')
             raise
 
-    def forward(self, mask, spec):
+    def forward(self, mask, spec, length: int):
         mask = mask.permute(0, 2, 1)
         spec_estimate = mask * spec
         wave_estimate = torch.istft(spec_estimate, n_fft=self.n_fft, hop_length=self.hop_length,
-                                    win_length=self.win_length, window=self.window, length=part_frames)
+                                    win_length=self.win_length, window=self.window, length=length)
         return wave_estimate
