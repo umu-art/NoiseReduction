@@ -41,6 +41,7 @@ class Conformer(nn.Module):
              for _ in
              range(conf_blocks_num)])
         self.lin_second = nn.Linear(size, self.f)
+        self.sigmoid = nn.Sigmoid()
         self.i_stft = IStftLayer(n_fft, hop_length, win_length, window_)
 
     """
@@ -58,5 +59,6 @@ class Conformer(nn.Module):
         for block in self.conf_blocks:
             x = block(x)
         x = self.lin_second(x)
+        x = self.sigmoid(x)
         x = self.i_stft(x, spec, length)
         return x
