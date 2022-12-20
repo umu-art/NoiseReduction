@@ -1,3 +1,5 @@
+from torchmetrics import ScaleInvariantSignalNoiseRatio
+
 # бывший SR
 part_frames = 16_000 * 3
 
@@ -36,3 +38,7 @@ step_size = 10  # размер шага
 gamma = 0.99  # быстрота изменения learning_rate (можно покрутить для улучшения обучения)
 min_lr = 1e-5  # искусственный минимальный learning_rate для обучения
 opt_lr = 1e-3 # оптимальный уровень learning_rate для обучения
+
+
+# Параметры loss_fn
+snr = ScaleInvariantSignalNoiseRatio()
