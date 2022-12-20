@@ -112,7 +112,8 @@ def val_epoch(model, data_loader, loss_fn, point: int, gl_point: int):
             "val_snr_i": val_snr_i}
 
 
-def train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_val, dataset_valid, epochs, save_path, clip_val: int):
+def train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_val, dataset_valid, epochs, save_path,
+          clip_val: int):
     """
         Аргументы:
             optimizer - оптимайзер
@@ -142,7 +143,8 @@ def train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_v
 
     print('Training...')
     for epoch in tqdm(range(epochs)):
-        cur_train = train_epoch(model, optimizer, scheduler, loss_fn, data_loader_train, epoch * Config.iters_per_epoch, epoch, clip_val)
+        cur_train = train_epoch(model, optimizer, scheduler, loss_fn, data_loader_train, epoch * Config.iters_per_epoch,
+                                epoch, clip_val)
         cur_val = val_epoch(model, data_loader_val, loss_fn, epoch * Config.iters_per_epoch, epoch)
         for _ in range(3):
             test(model, dataset_valid, 'epoch_' + str(epoch))

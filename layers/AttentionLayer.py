@@ -3,6 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F  # noqa
 import math
 
+from layers.GlobalLayerNorm import GlobalLayerNorm
+
 
 class PositionalEncoding(nn.Module):
     """
@@ -140,7 +142,7 @@ class MultiHeadedSelfAttentionModule(nn.Module):
     def __init__(self, d_model: int, num_heads: int, dropout_p: float = 0.1):
         super(MultiHeadedSelfAttentionModule, self).__init__()
         self.positional_encoding = PositionalEncoding(d_model)
-        self.layer_norm = nn.LayerNorm(d_model)
+        self.layer_norm = GlobalLayerNorm(d_model)
         self.attention = RelativeMultiHeadAttention(d_model, num_heads, dropout_p)
         self.dropout = nn.Dropout(p=dropout_p)
 

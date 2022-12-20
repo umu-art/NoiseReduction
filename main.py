@@ -6,7 +6,7 @@ from torchmetrics import ScaleInvariantSignalNoiseRatio
 import Config
 from CudaDevice import CudaDataLoader, to_cuda
 from NetMetods import train, test
-from Conformer import Conformer
+from layers.Conformer import Conformer
 from Sheduler import StepLRWithWarmup
 from datasets.MixDataset import MixDataset
 
