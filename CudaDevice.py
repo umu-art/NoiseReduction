@@ -7,6 +7,10 @@ if not torch.cuda.is_available():
 
 
 def to_cuda(data):
+    """
+    :param data: input data
+    :return: data on cuda
+    """
     if isinstance(data, (list, tuple)):
         return [to_cuda(x) for x in data]
     return data.to(device, non_blocking=True)
