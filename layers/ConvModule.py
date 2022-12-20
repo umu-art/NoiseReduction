@@ -4,6 +4,7 @@ from activators.GLU import GLU
 from activators.Swish import Swish
 from layers.DepthwiseConv import DepthwiseConv
 from layers.PointwiseConv import PointwiseConv
+from layers.GlobalLayerNorm import GlobalLayerNorm
 
 
 class ConvModule(nn.Module):
@@ -18,7 +19,7 @@ class ConvModule(nn.Module):
 
     def __init__(self, in_channels: int, kernel_size: int, dropout_p: float):
         super().__init__()
-        self.layer_norm = nn.LayerNorm(in_channels)
+        self.layer_norm = GlobalLayerNorm(in_channels)
         self.pointwise_conv_first = PointwiseConv(in_channels, in_channels * 2)
         self.glu = GLU(1)
         self.depthwise_conv = DepthwiseConv(in_channels, in_channels, kernel_size)

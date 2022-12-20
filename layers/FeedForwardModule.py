@@ -2,9 +2,10 @@ from torch import nn
 
 from activators.Swish import Swish
 
+from layers.GlobalLayerNorm import GlobalLayerNorm
+
 
 class FeedForwardModule(nn.Module):
-
     """
         FeedForwardModule - просто объединяет все слои.
         Аргументы:
@@ -19,7 +20,7 @@ class FeedForwardModule(nn.Module):
 
     def __init__(self, size: int, dropout_p: float, expansion_factor: int):
         super().__init__()
-        self.layer_norm = nn.LayerNorm(size)
+        self.layer_norm = GlobalLayerNorm(size)
         self.lin_first = nn.Linear(size, size * expansion_factor)
         self.swish = Swish()
         self.dropout_first = nn.Dropout(p=dropout_p)
