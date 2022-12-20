@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
+from torchmetrics import ScaleInvariantSignalNoiseRatio
 
 import Config
 from CudaDevice import CudaDataLoader, to_cuda
@@ -29,7 +30,7 @@ if __name__ == '__main__':
     data_loader_train = CudaDataLoader(data_loader_train)
     data_loader_valid = CudaDataLoader(data_loader_valid)
 
-    loss_fn = nn.L1Loss()
+    loss_fn = ScaleInvariantSignalNoiseRatio()
 
     model = Conformer(Config.n_fft, Config.hop_length, Config.win_length, Config.window,
                       Config.size, Config.conf_blocks_num, Config.conv_kernel_size)
