@@ -7,10 +7,9 @@ from AudioMetods import read_part_audio, read_audio_len
 from datasets.CacheDatasetPR import exist_cache, read_cache, save_cache
 
 
-class AudioDataset:
+class NoiseDataset:
 
-    def __init__(self, path: str, count_frames: int, steps_per_epoch: int, cache_name: str):
-        super().__init__()
+    def __init__(self, path: str, count_frames: int, cache_name: str):
         all_audio_paths = glob(path, recursive=True)
 
         if exist_cache(cache_name + '_audio_paths.vc') and exist_cache(cache_name + '_count_frames.vc'):
@@ -28,10 +27,9 @@ class AudioDataset:
             save_cache(self.audio_paths, cache_name + '_audio_paths.vc')
             save_cache(self.count_frames, cache_name + '_count_frames.vc')
 
-        assert len(self.audio_paths) > 0
+        assert len(self.audio_paths) > 1
 
         self.chunk_size = count_frames
-        self.steps_per_epoch = steps_per_epoch
 
     def get(self):
         while True:

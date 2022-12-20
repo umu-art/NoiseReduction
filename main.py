@@ -19,7 +19,6 @@ from datasets.MixDataset import MixDataset
 if __name__ == '__main__':
     print(torch.__version__)
 
-
     dataset_train = MixDataset(Config.snr_range, Config.iters_per_epoch * Config.batch_size)
     dataset_eval = MixDataset(Config.snr_range, Config.iters_per_epoch * Config.batch_size,
                               noise_pattern_=Config.noise_eval_pattern)

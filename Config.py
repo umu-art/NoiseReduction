@@ -11,6 +11,7 @@ noise_pattern = f'{noise_root}/**/*.wav'  # паттерн названия фа
 noise_eval_pattern = f'{noise_eval_root}/**/*.wav'  # паттерн названия файла с шумом для теста
 cache_folder = 'cache/'  # путь до директории с кешем
 snr_range = (2, 5)  # разброс snr для обучения [left..right]
+chance_same_gender = 0.2
 
 # Параметры модели
 n_fft = 1024  # размер STFT свертки
