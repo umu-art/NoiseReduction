@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 
 from layers.StftLayer import StftLayer
@@ -51,7 +52,7 @@ class Conformer(nn.Module):
             out (torch.tensor): данный массив, прогнанный через все нужные слои
     """
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor):
         length = x.shape[-1]
         spec, mag = self.stft(x)
         x = self.layer_norm(mag)
@@ -59,6 +60,6 @@ class Conformer(nn.Module):
         for block in self.conf_blocks:
             x = block(x)
         x = self.lin_second(x)
-        x = self.sigmoid(x)
-        x = self.i_stft(x, spec, length)
+        mask = self.sigmoid(x)
+        x = self.i_stft(mask, spec, length)
         return x
