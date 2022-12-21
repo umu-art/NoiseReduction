@@ -13,6 +13,9 @@ noise_eval_pattern = f'{noise_eval_root}/**/*.wav'  # паттерн назва�
 cache_folder = 'cache/'  # путь до директории с кешем
 snr_range = (2, 5)  # разброс snr для обучения [left..right]
 chance_same_gender = 0.2
+chance_one_speaker = 0.5
+chance_different_gender = 0.6
+chance_noise = 0.9
 
 # Параметры модели
 n_fft = 1024  # размер STFT свертки
