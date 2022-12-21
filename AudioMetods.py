@@ -25,7 +25,7 @@ def read_audio(path: str):
         Выход:
             **output** - (само аудио, частота, продолжительность)
     """
-    audio, samplerate = sf.read(path)
+    audio, samplerate = sf.read(path, dtype='float32')
     duration = len(audio) / samplerate
     return audio, samplerate, duration
 
@@ -40,7 +40,7 @@ def read_part_audio(path: str, start: int, frames: int):
         Выход:
             **output** - (само аудио, частота, продолжительность)
         """
-    return sf.read(path, start=start, frames=frames)[0]
+    return sf.read(path, start=start, frames=frames, dtype='float32')[0]
 
 
 def calc_energy(x: np.ndarray) -> float:
