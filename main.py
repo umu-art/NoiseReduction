@@ -29,7 +29,7 @@ if __name__ == '__main__':
     data_loader_train = CudaDataLoader(data_loader_train)
     data_loader_valid = CudaDataLoader(data_loader_valid)
 
-    loss_fn = sea_snr()
+    loss_fn = sea_snr
 
     model = Conformer(Config.n_fft, Config.hop_length, Config.win_length, Config.window,
                       Config.size, Config.conf_blocks_num, Config.conv_kernel_size)
