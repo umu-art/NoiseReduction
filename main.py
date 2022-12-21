@@ -1,9 +1,9 @@
 import torch
-import torch.nn as nn
+from torch import nn
 from torch.utils.data import DataLoader
 
 import Config
-from ConformerBSS import ConformerBSS
+from ConformerDetector import ConformerDetector
 from CudaDevice import CudaDataLoader, to_cuda
 from NetMetods import train, test
 from Sheduler import StepLRWithWarmup
@@ -31,8 +31,9 @@ if __name__ == '__main__':
 
     loss_fn = sea_snr
 
-    model = ConformerBSS(Config.n_fft, Config.hop_length, Config.win_length, Config.window,
-                         Config.size, Config.conf_blocks_num, Config.conv_kernel_size)
+    model = ConformerDetector(Config.n_fft, Config.hop_length, Config.win_length, Config.window,
+                              Config.size, Config.conf_blocks_num,
+                              Config.conv_kernel_size)
 
     to_cuda(model)
 
