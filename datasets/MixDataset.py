@@ -10,13 +10,10 @@ from datasets.NoiseDataset import NoiseDataset
 from datasets.CleanDataset import CleanDataset
 
 
-import torch
-import numpy as np
-
 def calc_energy(x: np.ndarray, eps: float = 1e-8) -> float:
     if x.ndim == 1:
         x = x[None]
-    return np.log10(np.sum(x ** 2, axis=1) / x.shape[1]) * 10
+    return np.log10(np.sum(x ** 2, axis=1) / x.shape[1] + eps) * 10
 
 
 def normalize(x: np.ndarray, level: float) -> np.ndarray:
