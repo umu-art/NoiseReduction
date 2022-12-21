@@ -13,7 +13,7 @@ class NRModel:
 
         snap = torch.load('model/model.tar', map_location='cpu')
         model_state_dict = snap['model']
-        self.model.load_state_dict(model_state_dict, strict=False)
+        self.model.load_state_dict(model_state_dict)
         self.model.eval()
 
     def __call__(self, *args, **kwargs):
@@ -22,5 +22,5 @@ class NRModel:
             a = a[:, 0]
             a = librosa.resample(a, orig_sr=b, target_sr=16_000)
             audio = torch.from_numpy(a)[None]
-            audio = self.model(audio)[0]
-            return audio.numpy()
+            wave = self.model(audio)[0]
+            return wave.numpy()
