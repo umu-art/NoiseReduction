@@ -47,5 +47,5 @@ class CleanDataset:
                 start = randint(0, self.count_frames[index] - self.chunk_size)
                 audio = read_part_audio(self.audio_paths[index], start, self.chunk_size)
                 return audio
-            finally:
+            except:
                 pass
