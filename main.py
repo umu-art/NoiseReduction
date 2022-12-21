@@ -1,9 +1,10 @@
-import Token
-from AudioMetods import save_audio
+from pathlib import Path
+
+from AudioMetods import save_audio, read_audio
 from model.NR_Model import NRModel
 import telebot
 
-bot = telebot.TeleBot(Token.token)
+bot = telebot.TeleBot("5659090384:AAHnJt9t6UWU2bEIg2uF8mmWB_YTn7_1Hi4")
 neiro = NRModel()
 
 
