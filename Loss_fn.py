@@ -1,15 +1,13 @@
 import torch
-from Config import snr
+from torchmetrics.functional import scale_invariant_signal_noise_ratio as si_snr
 
 
-def si_snr(preds, targets):
-    ans = []
-    for i in range(len(preds)):
-        pred = preds[i]
-        target = targets[i]
-        res_one = snr(pred, target)
-        pred[0], pred[1] = pred[1], pred[0]
-        res_two = snr(pred, target)
-        ans.append(-max(res_one, res_two))
-    ans = torch.tensor(ans)
-    return ans
+def sea_snr(preds, targets):
+    batch_size, _, t_size = preds.shape
+    res_one = torch.mean(si_snr(preds, targets), dim=1)
+    preds = preds.permute(1, 0, 2)
+    a, b = preds[1], preds[0]
+    preds = torch.cat((a, b)).reshape(2, batch_size, t_size).permute(1, 0, 2)
+    res_two = torch.mean(si_snr(preds, targets), dim=1)
+    res = -torch.maximum(res_one, res_two)
+    return res

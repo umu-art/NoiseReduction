@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
-from torchmetrics import ScaleInvariantSignalNoiseRatio
 
 import Config
 from CudaDevice import CudaDataLoader, to_cuda
@@ -9,7 +8,7 @@ from NetMetods import train, test
 from layers.Conformer import Conformer
 from Sheduler import StepLRWithWarmup
 from datasets.MixDataset import MixDataset
-from Loss_fn import si_snr
+from Loss_fn import sea_snr
 
 # wget https://www.openslr.org/resources/17/musan.tar.gz
 # wget https://www.openslr.org/resources/12/train-clean-100.tar.gz
@@ -30,7 +29,7 @@ if __name__ == '__main__':
     data_loader_train = CudaDataLoader(data_loader_train)
     data_loader_valid = CudaDataLoader(data_loader_valid)
 
-    loss_fn = si_snr()
+    loss_fn = sea_snr
 
     model = Conformer(Config.n_fft, Config.hop_length, Config.win_length, Config.window,
                       Config.size, Config.conf_blocks_num, Config.conv_kernel_size)
