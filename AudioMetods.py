@@ -1,5 +1,4 @@
 import soundfile as sf
-from Config import part_frames
 
 
 def read_audio(path: str):

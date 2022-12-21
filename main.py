@@ -1,31 +1,50 @@
-import torch
+from pathlib import Path
 
-import Config
-from AudioMetods import read_audio, save_audio
-from model.Conformer import Conformer
-import librosa
+from AudioMetods import save_audio, read_audio
+from model.NR_Model import NRModel
+import telebot
 
-# wget https://www.openslr.org/resources/17/musan.tar.gz
-# wget https://www.openslr.org/resources/12/train-clean-100.tar.gz
-# pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
-# tar -xf musan.tar.gz
-# tar -xf train-clean-100.tar.gz
+bot = telebot.TeleBot("5659090384:AAHnJt9t6UWU2bEIg2uF8mmWB_YTn7_1Hi4")
+neiro = NRModel()
 
-if __name__ == '__main__':
-    print(torch.__version__)
 
-    model = Conformer(Config.n_fft, Config.hop_length, Config.win_length, Config.window,
-                      Config.size, Config.conf_blocks_num, Config.conv_kernel_size)
-    snap = torch.load('model.tar', map_location='cpu')
-    model_state_dict = snap['model']
-    model.load_state_dict(model_state_dict, strict=False)
-    model.eval()
-    with torch.no_grad():
-        a, b, c = read_audio('music.mp3')
-        a = a[:,0]
-        a = librosa.resample(a, orig_sr=44100, target_sr=16_000)
-        a = a[:16000 * 60]
-        audio = torch.from_numpy(a)[None]
+def work(abstract, chat_id):
+    file_info = bot.get_file(abstract.file_id)
+    file_type = abstract.mime_type[6:]
+    downloaded_file = bot.download_file(file_info.file_path)
 
-        wave = model(audio)[0]
-        save_audio('./out.wav', wave.numpy())
+    print(f'New audio from {chat_id}')
+
+    bot.send_message(chat_id, 'Принял, работаю...')
+
+    src = 'cache/in.' + file_type
+    with open(src, 'wb') as new_file:
+        new_file.write(downloaded_file)
+
+    wave = neiro(src)
+    save_audio('cache/clean.wav', wave)
+
+    print(f'Successful for {chat_id}\n')
+
+    audio = open('cache/clean.wav', 'rb')
+    bot.send_audio(chat_id, audio)
+    audio.close()
+
+
+@bot.message_handler(content_types=["audio"])
+def get_audio(message):
+    work(message.audio, message.chat.id)
+
+
+@bot.message_handler(content_types=["document"])
+def get_audio(message):
+    work(message.document, message.chat.id)
+
+
+@bot.message_handler(content_types=["voice"])
+def get_audio(message):
+    work(message.voice, message.chat.id)
+
+
+print('Started')
+bot.infinity_polling()
