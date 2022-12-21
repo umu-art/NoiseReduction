@@ -1,9 +1,9 @@
 import torch
 from torch import nn
 
-from layers.StftLayer import StftLayer
-from layers.ConformerBlock import ConformerBlock
-from layers.IStftLayer import IStftLayer
+from model.layers.StftLayer import StftLayer
+from model.layers.ConformerBlock import ConformerBlock
+from model.layers.IStftLayer import IStftLayer
 
 
 class Conformer(nn.Module):

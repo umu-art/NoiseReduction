@@ -1,9 +1,9 @@
 from torch import nn
 
-from layers.FeedForwardModule import FeedForwardModule
-from layers.AttentionLayer import MultiHeadedSelfAttentionModule
-from layers.ConvModule import ConvModule
-from layers.ResCon import ResCon
+from model.layers.FeedForwardModule import FeedForwardModule
+from model.layers.AttentionLayer import MultiHeadedSelfAttentionModule
+from model.layers.ConvModule import ConvModule
+from model.layers.ResCon import ResCon
 
 
 class ConformerBlock(nn.Module):

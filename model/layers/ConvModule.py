@@ -1,9 +1,9 @@
 from torch import nn
 
-from activators.GLU import GLU
-from activators.Swish import Swish
-from layers.DepthwiseConv import DepthwiseConv
-from layers.PointwiseConv import PointwiseConv
+from model.activators.GLU import GLU
+from model.activators.Swish import Swish
+from model.layers.DepthwiseConv import DepthwiseConv
+from model.layers.PointwiseConv import PointwiseConv
 
 
 class ConvModule(nn.Module):
