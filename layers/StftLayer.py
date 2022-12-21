@@ -5,12 +5,12 @@ class StftLayer(torch.nn.Module):
     def __init__(self, n_fft: int, hop_length: int, win_length: int, window: str, return_complex: bool = True):
         super().__init__()
         """
-        arguments:
-        n_fft(int) Length of the FFT used
-        hop_length(int) the distance between neighboring sliding window frames
-        win_length(int) the size of window frame and STFT filter
-        window(str) the optional window function
-        return_complex(bool) whether to return a complex tensor, or a real tensor with an extra last dimension for the real and imaginary components.
+            arguments:
+                n_fft(int) Length of the FFT used
+                hop_length(int) the distance between neighboring sliding window frames
+                win_length(int) the size of window frame and STFT filter
+                window(str) the optional window function
+                return_complex(bool) whether to return a complex tensor, or a real tensor with an extra last dimension for the real and imaginary components.
         """
         self.n_fft = n_fft
         self.hop_length = hop_length
