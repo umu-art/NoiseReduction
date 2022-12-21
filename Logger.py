@@ -17,15 +17,8 @@ namespace = parser.parse_args()
 
 writer = SummaryWriter("log/" + namespace.log)
 
-tb = program.TensorBoard()
-tb.configure(argv=[None, '--logdir', 'log/' + namespace.log + '/'])
-url = tb.launch()
-print(f"Tensorflow listening on {url}")
 
-
-def write_point(t: str, x: int, cur_snr, inp_snr, loss):
-    writer.add_scalars(t, {'cur_snr': cur_snr,
-                           'inp_snr': inp_snr}, x)
+def write_point(t: str, x: int, loss):
     writer.add_scalars('loss', {t: loss}, x)
     writer.flush()
 
@@ -34,10 +27,7 @@ def save_audio(audio, name):
     writer.add_audio(name, audio, sample_rate=16000)
 
 
-def write_epoch_point(t: str, x: int, snr, inp_snr, snr_i, loss):
-    writer.add_scalars(t, {"snr": snr,
-                           "inp_snr": inp_snr,
-                           "snr_i": snr_i}, x)
+def write_epoch_point(t: str, x: int, loss):
     writer.add_scalars('epoch_loss', {t: loss}, x)
     writer.flush()
 
