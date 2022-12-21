@@ -1,9 +1,12 @@
+import math
+
 import librosa
 import torch
 
 from AudioMetods import read_audio
 from model import Config
 from model.Conformer import Conformer
+from model.CudaDevice import to_cuda
 
 
 class NRModel:
@@ -14,6 +17,7 @@ class NRModel:
         snap = torch.load('model/model.tar', map_location='cpu')
         model_state_dict = snap['model']
         self.model.load_state_dict(model_state_dict)
+        to_cuda(self.model)
         self.model.eval()
 
     def __call__(self, *args, **kwargs):
@@ -22,6 +26,17 @@ class NRModel:
             if a.ndim > 1:
                 a = a[:, 0]
             a = librosa.resample(a, orig_sr=b, target_sr=16_000)
-            audio = torch.from_numpy(a)[None]
-            wave = self.model(audio)[0]
-            return wave.numpy()
+            audio = torch.from_numpy(a)
+            audio = audio[:16_000 * 60 * 5]
+            audio_len = len(audio)
+            part_num = math.ceil(len(audio) / 16000 / 60)
+            addition = torch.zeros(part_num * 16_000 * 60 - len(audio))
+            audio = torch.cat((audio, addition))
+            audio = audio.reshape((part_num, 16_000 * 60))
+            audio = to_cuda(audio)
+            out = torch.tensor([])
+            for u in audio:
+                wave = self.model(u[None])[0]
+                out = torch.cat((out, wave.cpu()))
+            out = out[:audio_len]
+            return out.numpy()

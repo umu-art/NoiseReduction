@@ -22,7 +22,8 @@ def work(abstract, chat_id):
     with open(src, 'wb') as new_file:
         new_file.write(downloaded_file)
 
-    subprocess.run(['ffmpeg/bin/ffmpeg.exe', '-y', '-i', src, 'cache/in.wav'])
+    subprocess.run(['ffmpeg/bin/ffmpeg.exe', '-hide_banner', '-loglevel', 'error',
+                    '-y', '-i', src, 'cache/in.wav'])
 
     wave = neiro('cache/in.wav')
     save_audio('cache/clean.wav', wave)
@@ -34,18 +35,24 @@ def work(abstract, chat_id):
     audio.close()
 
 
+@bot.message_handler(commands=['start', 'help'])
+def hello(message):
+    bot.send_message(message.chat.id, 'Привет, я бот NR\nОтправь мне аудиозапись или голосовое сообщение,\n'
+                                      'и я верну его же без шумов')
+
+
 @bot.message_handler(content_types=["audio"])
 def get_audio(message):
     work(message.audio, message.chat.id)
 
 
 @bot.message_handler(content_types=["document"])
-def get_audio(message):
+def get_document(message):
     work(message.document, message.chat.id)
 
 
 @bot.message_handler(content_types=["voice"])
-def get_audio(message):
+def get_voice(message):
     work(message.voice, message.chat.id)
 
 
