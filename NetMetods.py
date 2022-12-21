@@ -184,9 +184,6 @@ def test(model, dataset, i: str):
     # ashow(mixture)
 
     mixture = torch.from_numpy(mixture)
-    add = math.ceil(mixture.shape[0] / Config.part_frames) * Config.part_frames - mixture.shape[0]
-    tenz_add = torch.zeros([add])
-    mixture = torch.cat([mixture, tenz_add])
     mixture = to_cuda(mixture)
 
     model.eval()
