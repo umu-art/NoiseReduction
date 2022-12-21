@@ -1,9 +1,13 @@
 import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader
 
 import Config
-from AudioMetods import read_audio, save_audio
-from model.Conformer import Conformer
-import librosa
+from CudaDevice import CudaDataLoader, to_cuda
+from NetMetods import train, test
+from Conformer import Conformer
+from Sheduler import StepLRWithWarmup
+from datasets.MixDataset import MixDataset
 
 # wget https://www.openslr.org/resources/17/musan.tar.gz
 # wget https://www.openslr.org/resources/12/train-clean-100.tar.gz
@@ -14,18 +18,36 @@ import librosa
 if __name__ == '__main__':
     print(torch.__version__)
 
+    dataset_train = MixDataset(Config.snr_range, Config.iters_per_epoch * Config.batch_size)
+    dataset_eval = MixDataset(Config.snr_range, Config.iters_per_epoch * Config.batch_size,
+                              noise_pattern_=Config.noise_eval_pattern)
+
+    data_loader_train = DataLoader(dataset_train, batch_size=Config.batch_size, shuffle=False)
+    data_loader_valid = DataLoader(dataset_eval, batch_size=Config.batch_size, shuffle=False)
+
+    data_loader_train = CudaDataLoader(data_loader_train)
+    data_loader_valid = CudaDataLoader(data_loader_valid)
+
+    loss_fn = nn.L1Loss()
+
     model = Conformer(Config.n_fft, Config.hop_length, Config.win_length, Config.window,
                       Config.size, Config.conf_blocks_num, Config.conv_kernel_size)
-    snap = torch.load('model.tar', map_location='cpu')
-    model_state_dict = snap['model']
-    model.load_state_dict(model_state_dict, strict=False)
-    model.eval()
-    with torch.no_grad():
-        a, b, c = read_audio('music.mp3')
-        a = a[:,0]
-        a = librosa.resample(a, orig_sr=44100, target_sr=16_000)
-        a = a[:16000 * 60]
-        audio = torch.from_numpy(a)[None]
 
-        wave = model(audio)[0]
-        save_audio('./out.wav', wave.numpy())
+    to_cuda(model)
+
+    optimizer = torch.optim.Adam(model.parameters(), lr=Config.opt_lr)
+
+    scheduler = StepLRWithWarmup(optimizer, step_size=Config.step_size, gamma=Config.gamma,
+                                 warmup_epochs=Config.warmup_epochs, warmup_lr_init=Config.start_lr,
+                                 min_lr=Config.min_lr)
+
+    train(model, optimizer, scheduler, loss_fn,
+          data_loader_train, data_loader_valid, dataset_eval,
+          Config.epochs, Config.save_path, Config.clip_val)
+
+    for i in range(10):
+        test(model, dataset_eval, 'finish_' + str(i))
+
+    while True:
+        if input() == 'finish':
+            break

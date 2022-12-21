@@ -1,6 +1,6 @@
 from torch import nn
 
-from model.activators.Swish import Swish
+from activators.Swish import Swish
 
 
 class FeedForwardModule(nn.Module):
