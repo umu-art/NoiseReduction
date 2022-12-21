@@ -58,11 +58,13 @@ class MixDataset(Dataset):
         clean_one = a.get()
         clean_two = b.get()
         noise = self.noise.get()
-        snr = uniform(self.snr_range[0], self.snr_range[1])
-        clean_one = self.nm(clean_one)
-        clean_two = self.nm(clean_two)
+        # snr = uniform(self.snr_range[0], self.snr_range[1])
+        clean_one = self.nm(clean_one)[0]
+        clean_two = self.nm(clean_two)[0]
         mix_clean = clean_one + clean_two
-        mix = mix_clean + calc_coefficient(mix_clean, noise, snr) * noise
+        mix_clean = mix_clean.astype('float32')
+        mix = mix_clean
+        # mix = mix_clean + calc_coefficient(mix_clean, noise, snr) * noise
         return mix, np.stack([clean_one, clean_two])
 
     def __getitem__(self, item):
@@ -74,10 +76,8 @@ class MixDataset(Dataset):
             return self.get(self.clean_woman, self.clean_woman)
         chance = uniform(0, 1)
         if chance <= 0.5:
-            chance = uniform(0, 1)
-            if chance <= 0.5:
-                return self.get(self.clean_woman, self.clean_man)
-            return self.get(self.clean_man, self.clean_woman)
+            return self.get(self.clean_woman, self.clean_man)
+        return self.get(self.clean_man, self.clean_woman)
 
 
 
