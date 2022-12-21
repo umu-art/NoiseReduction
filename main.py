@@ -3,9 +3,9 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 
 import Config
+from ConformerBSS import ConformerBSS
 from CudaDevice import CudaDataLoader, to_cuda
 from NetMetods import train, test
-from layers.Conformer import Conformer
 from Sheduler import StepLRWithWarmup
 from datasets.MixDataset import MixDataset
 from Loss_fn import sea_snr
@@ -31,15 +31,15 @@ if __name__ == '__main__':
 
     loss_fn = sea_snr
 
-    model = Conformer(Config.n_fft, Config.hop_length, Config.win_length, Config.window,
-                      Config.size, Config.conf_blocks_num, Config.conv_kernel_size)
+    model = ConformerBSS(Config.n_fft, Config.hop_length, Config.win_length, Config.window,
+                         Config.size, Config.conf_blocks_num, Config.conv_kernel_size)
 
     to_cuda(model)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=Config.opt_lr)
 
     scheduler = StepLRWithWarmup(optimizer, step_size=Config.step_size, gamma=Config.gamma,
-                                 warmup_epochs=Config.warmup_epochs, warmup_lr_init=Config.start_lr,
+                                 warmup_epochs=Config.warmup_iters, warmup_lr_init=Config.start_lr,
                                  min_lr=Config.min_lr)
 
     train(model, optimizer, scheduler, loss_fn,

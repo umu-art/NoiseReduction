@@ -4,7 +4,7 @@ part_frames = 16_000 * 3
 
 # Параметры Dataset
 prefix_root = 'E:/'  # начало ссылок на входные данные
-clean_speech_data_root = f'{prefix_root}LibriSpeech/train-clean-100'  # местоположение директории с чистыми записями для обучения
+clean_speech_data_root = f'{prefix_root}LibriSpeech/train-clean-360'  # местоположение директории с чистыми записями для обучения
 noise_root = f'{prefix_root}musan/noise'  # местоположение директории с шумами для обучения
 noise_eval_root = f'{prefix_root}DEMAND'  # местоположение директории с шумами для теста
 clean_pattern = f'{clean_speech_data_root}/**/*.flac'  # паттерн названия файла с записью диктора
@@ -25,16 +25,16 @@ conv_kernel_size = 31  # kernel_size для ConvModule
 w_len = 40
 
 # Параметры обучения
-batch_size = 4  # размер выборки для одной итерации по датасету
-iters_per_epoch = 10  # количество итераций на эпоху обучения
-epochs = 2  # количество эпох обучения
+batch_size = 96  # размер выборки для одной итерации по датасету
+iters_per_epoch = 1024  # количество итераций на эпоху обучения
+epochs = 100  # количество эпох обучения
 clip_val = 5  # параметр для изменения learning_rate
-save_path = 'out.tar'  # путь до архива с сохраненными данными после обучения/тестирования
+save_path = 'bss.tar'  # путь до архива с сохраненными данными после обучения/тестирования
 
 # Параметры scheduler
 start_lr = 1e-5  # стартовая learning_rate
-warmup_epochs = 10  # количесто wapmup_epoch
-step_size = 10  # размер шага
+warmup_iters = 512  # количесто wapmup_epoch
+step_size = 96  # размер шага
 gamma = 0.99  # быстрота изменения learning_rate (можно покрутить для улучшения обучения)
 min_lr = 1e-5  # искусственный минимальный learning_rate для обучения
 opt_lr = 1e-3 # оптимальный уровень learning_rate для обучения
