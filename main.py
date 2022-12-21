@@ -2,6 +2,7 @@ import Token
 from AudioMetods import save_audio
 from model.NR_Model import NRModel
 import telebot
+import subprocess
 
 bot = telebot.TeleBot(Token.token)
 neiro = NRModel()
@@ -9,8 +10,7 @@ neiro = NRModel()
 
 def work(abstract, chat_id):
     file_info = bot.get_file(abstract.file_id)
-    # file_type = abstract.mime_type[6:]
-    file_type = 'wav'
+    file_type = abstract.mime_type[6:]
 
     downloaded_file = bot.download_file(file_info.file_path)
 
@@ -18,11 +18,13 @@ def work(abstract, chat_id):
 
     bot.send_message(chat_id, 'Принял, работаю...')
 
-    src = 'cache/in.' + file_type
+    src = 'cache/in_raw.' + file_type
     with open(src, 'wb') as new_file:
         new_file.write(downloaded_file)
 
-    wave = neiro(src)
+    subprocess.run(['ffmpeg/bin/ffmpeg.exe', '-y', '-i', src, 'cache/in.wav'])
+
+    wave = neiro('cache/in.wav')
     save_audio('cache/clean.wav', wave)
 
     print(f'Successful for {chat_id}\n')

@@ -19,7 +19,8 @@ class NRModel:
     def __call__(self, *args, **kwargs):
         with torch.no_grad():
             a, b, c = read_audio(args[0])
-            a = a[:, 0]
+            if a.ndim > 1:
+                a = a[:, 0]
             a = librosa.resample(a, orig_sr=b, target_sr=16_000)
             audio = torch.from_numpy(a)[None]
             wave = self.model(audio)[0]
