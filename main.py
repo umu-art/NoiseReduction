@@ -18,20 +18,22 @@ def work(abstract, chat_id):
 
     bot.send_message(chat_id, 'Принял, работаю...')
 
-    src = 'cache/in_raw.' + file_type
+    file_name = f'audio_from_{chat_id}'
+
+    src = f'cache/{file_name}.{file_type}'
     with open(src, 'wb') as new_file:
         new_file.write(downloaded_file)
 
     subprocess.run(['ffmpeg/bin/ffmpeg.exe', '-hide_banner', '-loglevel', 'error',
-                    '-y', '-i', src, 'cache/in.wav'])
+                    '-y', '-i', src, f'cache/{file_name}_conv.wav'])
 
-    wave = neiro('cache/in.wav')
-    save_audio('cache/clean.wav', wave)
+    wave = neiro(f'cache/{file_name}_conv.wav')
+    save_audio(f'cache/{file_name}_clean.wav', wave)
 
     print(f'Successful for {chat_id}\n')
 
-    audio = open('cache/clean.wav', 'rb')
-    bot.send_audio(chat_id, audio)
+    audio = open(f'cache/{file_name}_clean.wav', 'rb')
+    bot.send_audio(chat_id, audio, title='Ваша запись без шума')
     audio.close()
 
 

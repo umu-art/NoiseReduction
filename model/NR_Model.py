@@ -12,7 +12,7 @@ from model.CudaDevice import to_cuda
 class NRModel:
     def __init__(self):
         self.model = Conformer(Config.n_fft, Config.hop_length, Config.win_length, Config.window,
-                          Config.size, Config.conf_blocks_num, Config.conv_kernel_size)
+                                Config.size, Config.conf_blocks_num, Config.conv_kernel_size)
 
         snap = torch.load('model/model.tar', map_location='cpu')
         model_state_dict = snap['model']
