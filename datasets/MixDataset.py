@@ -70,7 +70,7 @@ class MixDataset(Dataset):
             mix = mix_clean
         return mix
 
-    def get_one_people(self, a, b):
+    def get_one_people(self, a):
         clean_one = a.get()
         clean_one = self.nm(clean_one)
         chance = uniform(0, 1)
@@ -89,7 +89,7 @@ class MixDataset(Dataset):
             if chance <= 0.5:
                 return self.get_one_people(self.clean_man), 0
             else:
-                return self.get(self.clean_woman), 0
+                return self.get_one_people(self.clean_woman), 0
         else:
             chance = uniform(0, 1)
             if chance <= Config.chance_different_gender:
@@ -100,7 +100,3 @@ class MixDataset(Dataset):
                     return self.get_two_people(self.clean_man, self.clean_woman), 1
                 else:
                     return self.get_two_people(self.clean_woman, self.clean_woman), 1
-
-
-
-

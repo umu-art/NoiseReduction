@@ -25,7 +25,7 @@ window = 'hann_window'  # тип окна STFT (еще есть 'hamm_window')
 size = n_fft // 2  # размер после линейного преобразования в Conformer
 conf_blocks_num = 12  # Количество ConformerBlock'ов в Conformer'е
 conv_kernel_size = 31  # kernel_size для ConvModule
-w_len = 40
+w_len = 160
 
 # Параметры обучения
 batch_size = 96  # размер выборки для одной итерации по датасету
