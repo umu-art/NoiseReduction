@@ -38,7 +38,7 @@ def train_epoch(model: nn.Module, optimizer: optim, scheduler: optim.lr_schedule
 
         prob = torch.sigmoid(logits)
         prob = (prob > 0.5).float()
-        prob_mean = float(torch.mean(prob == target))  # TODO: тут питон ругается
+        prob_mean = float(torch.mean(torch.FloatTensor(prob == target)))
         train_accuracy += prob_mean
 
         Logger.write_grad_norm(float(torch.nn.utils.clip_grad_norm_(model.parameters(), clip_val)), point)
@@ -82,7 +82,7 @@ def val_epoch(model, data_loader, loss_fn, point: int, gl_point: int):
         val_loss += loss.item()
         prob = torch.sigmoid(logits)
         prob = (prob > 0.5).float()
-        prob_mean = float(torch.mean(prob == target))  # TODO: тут питон ругается
+        prob_mean = float(torch.mean(torch.FloatTensor(prob == target)))
         val_accuracy += prob_mean
 
         Logger.write_point('eval', point, loss.item(), prob_mean)

@@ -30,9 +30,8 @@ if __name__ == '__main__':
 
     loss_fn = nn.BCEWithLogitsLoss()
 
-    model = ConformerDetector(Config.n_fft, Config.hop_length, Config.win_length, Config.window,
-                              Config.size, Config.conf_blocks_num,
-                              Config.conv_kernel_size)
+    model = ConformerDetector(Config.size, Config.conf_blocks_num, Config.conv_kernel_size, 1, Config.w_len,
+                              Config.w_len // 2)
 
     to_cuda(model)
 
