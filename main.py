@@ -1,11 +1,15 @@
 import Token
 from AudioMetods import save_audio
-from model.NR_Model import NRModel
+from model_BSS.BSS_Model import BSSModel
+from model_D.D_Model import DModel
+from model_NR.NR_Model import NRModel
 import telebot
 import subprocess
 
 bot = telebot.TeleBot(Token.token)
 neiro = NRModel()
+spliter = BSSModel()
+detect = DModel()
 
 
 def work(abstract, chat_id):
@@ -27,21 +31,42 @@ def work(abstract, chat_id):
     subprocess.run(['ffmpeg/bin/ffmpeg.exe', '-hide_banner', '-loglevel', 'error',
                     '-y', '-i', src, f'cache/{file_name}_conv.wav'])
 
-    wave = neiro(f'cache/{file_name}_conv.wav')
-    save_audio(f'cache/{file_name}_clean.wav', wave)
+    two_speakers = detect(f'cache/{file_name}_conv.wav')
+
+    if not two_speakers:
+        print('Режим шумодава')
+        wave = neiro(f'cache/{file_name}_conv.wav')
+        save_audio(f'cache/{file_name}_clean.wav', wave)
+
+        audio = open(f'cache/{file_name}_clean.wav', 'rb')
+        bot.send_audio(chat_id, audio, title='Ваша запись без шума', duration=len(wave) // 16_000, performer='NR_Bot')
+        audio.close()
+    else:
+        print('Режим разделения')
+        wave = spliter(f'cache/{file_name}_conv.wav')
+        save_audio(f'cache/{file_name}_split0.wav', wave[0])
+        save_audio(f'cache/{file_name}_split1.wav', wave[1])
+
+        wave = neiro(f'cache/{file_name}_split0.wav')
+        save_audio(f'cache/{file_name}_split_cl0.wav', wave)
+
+        wave = neiro(f'cache/{file_name}_split1.wav')
+        save_audio(f'cache/{file_name}_split_cl1.wav', wave)
+
+        audio = open(f'cache/{file_name}_split_cl0.wav', 'rb')
+        bot.send_audio(chat_id, audio, title='Первый спикер', duration=len(wave) // 16_000, performer='NR_Bot')
+        audio = open(f'cache/{file_name}_split_cl1.wav', 'rb')
+        bot.send_audio(chat_id, audio, title='Второй спикер', duration=len(wave) // 16_000, performer='NR_Bot')
 
     print(f'Successful for {chat_id}\n')
-
-    audio = open(f'cache/{file_name}_clean.wav', 'rb')
-    bot.send_audio(chat_id, audio, title='Ваша запись без шума')
-    audio.close()
 
 
 @bot.message_handler(commands=['start', 'help'])
 def hello(message):
-    bot.send_photo(message.chat.id, open('hi.jpg', 'rb'), 'Налево пойдёшь, шум из аудио уберешь. Направо пойдёшь, запись двух человек '
-                                      'разделишь. Прямо пойдёшь, смерть свою сыщешь. Дорогу выберем мы, тебе нужно '
-                                      'просто отправить голосовое/аудиофайл/кружочек c видео.')
+    bot.send_photo(message.chat.id, open('hi.jpg', 'rb'),
+                   'Налево пойдёшь, шум из аудио уберешь. Направо пойдёшь, запись двух человек '
+                   'разделишь. Прямо пойдёшь, смерть свою сыщешь. Дорогу выберем мы, тебе нужно '
+                   'просто отправить голосовое/аудиофайл/кружочек c видео.')
 
 
 @bot.message_handler(content_types=["audio"])
@@ -84,7 +109,7 @@ def get_video_note(message):
     save_audio(f'cache/{file_name}_clean.wav', wave)
 
     subprocess.run(['ffmpeg/bin/ffmpeg.exe', '-hide_banner', '-loglevel', 'error',
-                    '-y', '-i', src, '-i',  f'cache/{file_name}_clean.wav', '-map', '0:v', '-map', '1:a',
+                    '-y', '-i', src, '-i', f'cache/{file_name}_clean.wav', '-map', '0:v', '-map', '1:a',
                     '-shortest', f'cache/{file_name}_out.mp4'])
 
     print(f'Successful for {message.chat.id}\n')

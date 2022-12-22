@@ -7,7 +7,7 @@ import math
 class PositionalEncoding(nn.Module):
     """
     Positional Encoding proposed in "Attention Is All You Need".
-    Since transformer contains no recurrence and no convolution, in order for the model to make
+    Since transformer contains no recurrence and no convolution, in order for the model_NR to make
     use of the order of the sequence, we must add some positional information.
     "Attention Is All You Need" use sine and cosine functions of different frequencies:
         PE_(pos, 2i)    =  sin(pos / power(10000, 2i / d_model))
@@ -33,7 +33,7 @@ class RelativeMultiHeadAttention(nn.Module):
     Multi-head attention with relative positional encoding.
     This concept was proposed in the "Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context"
     Args:
-        d_model (int): The dimension of model
+        d_model (int): The dimension of model_NR
         num_heads (int): The number of attention heads.
         dropout_p (float): probability of dropout
     Inputs: query, key, value, pos_embedding, mask
@@ -127,7 +127,7 @@ class MultiHeadedSelfAttentionModule(nn.Module):
     the utterance length. Conformer use prenorm residual units with dropout which helps training
     and regularizing deeper models.
     Args:
-        d_model (int): The dimension of model
+        d_model (int): The dimension of model_NR
         num_heads (int): The number of attention heads.
         dropout_p (float): probability of dropout
     Inputs: inputs, mask
