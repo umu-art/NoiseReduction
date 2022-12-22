@@ -31,33 +31,45 @@ def train_epoch(model: nn.Module, optimizer: optim, scheduler: optim.lr_schedule
     train_loss = 0
     train_accuracy = 0
 
-    for mixture, target in tqdm(data_loader):
+    for mixture, target in tqdm(data_loader, desc='Train epoch'):
         logits = model(mixture)
-        loss = loss_fn(logits, target)
+        loss = loss_fn(logits, target.float())
         loss.backward()
 
         prob = torch.sigmoid(logits)
         prob = (prob > 0.5).float()
-        prob_mean = float(torch.mean(torch.FloatTensor(prob == target)))
+        prob_mean = float(torch.mean((prob == target).float()))
         train_accuracy += prob_mean
 
-        Logger.write_grad_norm(float(torch.nn.utils.clip_grad_norm_(model.parameters(), clip_val)), point)
+        grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), clip_val)
+        # Logger.write_grad_norm(float(torch.nn.utils.clip_grad_norm_(model.parameters(), clip_val)), point)
         optimizer.step()
 
-        Logger.write_lr(scheduler.get_last_lr(), point)
+        # Logger.write_lr(scheduler.get_last_lr(), point)
         scheduler.step()
         optimizer.zero_grad()
 
         train_loss += loss.item()
 
-        Logger.write_point('train', point, loss.item(), prob_mean)
+        # Logger.write_point('train', point, loss.item(), prob_mean)
+
+        Logger.write_point('Train/grad_norm', grad_norm.item(), point)
+        Logger.write_point('Train/lr', scheduler.get_last_lr()[0], point)
+        Logger.write_point('Train/Loss', loss.item(), point)
+        Logger.write_point('Train/Accuracy', prob_mean, point)
+
         point += 1
     n = len(data_loader)
     train_loss /= n
     train_accuracy /= n
 
-    Logger.write_epoch_point('train_epoch', gl_point, train_loss, train_accuracy)
-    return {"train_loss": train_loss, "train_accuracy": train_accuracy}
+    # Logger.write_epoch_point('train_epoch', gl_point, train_loss, train_accuracy)
+    Logger.write_point('Train/Locc_epoch', train_loss, gl_point)
+    Logger.write_point('Train/Accuracy_epoch', train_accuracy, gl_point)
+    return {
+        "train_loss": train_loss,
+        "train_accuracy": train_accuracy
+    }
 
 
 @torch.no_grad()
@@ -76,22 +88,30 @@ def val_epoch(model, data_loader, loss_fn, point: int, gl_point: int):
     model.eval()
     val_loss = 0
     val_accuracy = 0
-    for mixture, target in data_loader:
+    for mixture, target in tqdm(data_loader, desc='Val epoch'):
         logits = model(mixture)
-        loss = loss_fn(logits, target)
+        loss = loss_fn(logits, target.float())
         val_loss += loss.item()
         prob = torch.sigmoid(logits)
         prob = (prob > 0.5).float()
-        prob_mean = float(torch.mean(torch.FloatTensor(prob == target)))
+        prob_mean = float(torch.mean((prob == target).float()))
         val_accuracy += prob_mean
 
-        Logger.write_point('eval', point, loss.item(), prob_mean)
+        # Logger.write_point('eval', point, loss.item(), prob_mean)
+        Logger.write_point('Val/Loss', loss.item(), point)
+        Logger.write_point('Val/Accuracy', prob_mean, point)
+
         point += 1
     n = len(data_loader)
     val_loss /= n
     val_accuracy /= n
-    Logger.write_epoch_point('eval_epoch', gl_point, val_loss, val_accuracy)
-    return {"val_loss": val_loss, "val_accuracy": val_accuracy}
+    # Logger.write_epoch_point('eval_epoch', gl_point, val_loss, val_accuracy)
+    Logger.write_point('Val/Locc_epoch', val_loss, gl_point)
+    Logger.write_point('Val/Accuracy_epoch', val_accuracy, gl_point)
+    return {
+        "val_loss": val_loss,
+        "val_accuracy": val_accuracy
+    }
 
 
 def train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_val, dataset_valid, epochs, save_path,
@@ -120,7 +140,7 @@ def train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_v
     }
 
     print('Training...')
-    for epoch in tqdm(range(epochs)):
+    for epoch in tqdm(range(epochs), desc='Training...'):
         cur_train = train_epoch(model, optimizer, scheduler, loss_fn, data_loader_train, epoch * Config.iters_per_epoch,
                                 epoch, clip_val)
         cur_val = val_epoch(model, data_loader_val, loss_fn, epoch * Config.iters_per_epoch, epoch)
@@ -138,7 +158,14 @@ def train(model, optimizer, scheduler, loss_fn, data_loader_train, data_loader_v
             "optimizer": optimizer.state_dict(),
             "logs": logs,
         }
-        print('Loss', cur_val["val_loss"])
+        # print('Loss', cur_val["val_loss"])
+
+        print()
+        print()
+        for key, value in logs.items():
+            print(f'{key} = {value[-1]:.3f}')
+        print()
+        print()
 
         torch.save(snapshot, save_path)
 
