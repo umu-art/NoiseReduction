@@ -97,6 +97,7 @@ class MixDataset(Dataset):
             else:
                 chance = uniform(0, 1)
                 if chance <= 0.5:
-                    return self.get_two_people(self.clean_man, self.clean_woman), 1
+                    return self.get_two_people(self.clean_man, self.clean_man), 1
                 else:
                     return self.get_two_people(self.clean_woman, self.clean_woman), 1
+
