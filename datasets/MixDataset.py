@@ -16,11 +16,11 @@ def calc_energy(x: np.ndarray, eps: float = 1e-8) -> float:
     return np.log10(np.sum(x ** 2, axis=1) / x.shape[1] + eps) * 10
 
 
-def normalize(x: np.ndarray, level: float) -> np.ndarray:
+def normalize(x: np.ndarray, level: float, eps: float = 1e-8) -> np.ndarray:
     if x.ndim == 1:
         x = x[None]
     summ = 10 ** (level / 10) * x.shape[1]
-    coef = summ / np.sum(x ** 2, axis=1)[0]
+    coef = summ / (np.sum(x ** 2, axis=1)[0] + eps)
     return x * np.sqrt(coef)
 
 
@@ -68,9 +68,9 @@ class MixDataset(Dataset):
             mix = mix_clean + calc_coefficient(mix_clean, noise, snr) * noise
         else:
             mix = mix_clean
-        return mix
+        return mix[0].astype('float32')
 
-    def get_one_people(self, a, b):
+    def get_one_people(self, a):
         clean_one = a.get()
         clean_one = self.nm(clean_one)
         chance = uniform(0, 1)
@@ -80,7 +80,7 @@ class MixDataset(Dataset):
             mix = clean_one + calc_coefficient(clean_one, noise, snr) * noise
         else:
             mix = clean_one
-        return mix
+        return mix[0].astype('float32')
 
     def __getitem__(self, item):
         chance = uniform(0, 1)
@@ -89,7 +89,7 @@ class MixDataset(Dataset):
             if chance <= 0.5:
                 return self.get_one_people(self.clean_man), 0
             else:
-                return self.get(self.clean_woman), 0
+                return self.get_one_people(self.clean_woman), 0
         else:
             chance = uniform(0, 1)
             if chance <= Config.chance_different_gender:
@@ -100,7 +100,3 @@ class MixDataset(Dataset):
                     return self.get_two_people(self.clean_man, self.clean_man), 1
                 else:
                     return self.get_two_people(self.clean_woman, self.clean_woman), 1
-
-
-
-

@@ -13,7 +13,7 @@ class Conformer(nn.Module):
             conv_kernel_size: параметр для DepthWise слоя
             num_heads, expansion_factor, dropout_conv, dropout_multi_head, dropout_feed_forward: параметры для ConformerBlock (см. ConformerBlock.py)
         Возвращает:
-            Объект типа Separator (основная часть модели)
+            Объект типа Conformer (основная часть модели)
     """
 
     def __init__(self, size: int, conf_blocks_num: int,
@@ -30,7 +30,7 @@ class Conformer(nn.Module):
                             dropout_feed_forward=dropout_feed_forward)
              for _ in
              range(conf_blocks_num)])
-        self.lin_second = nn.Linear(size, size * 2)
+        self.lin_second = nn.Linear(size, size)
 
     """
         Аргументы: 
@@ -40,12 +40,8 @@ class Conformer(nn.Module):
     """
 
     def forward(self, x):
-        # length = x.shape[-1]
-        # spec, mag = self.stft(x)
-        # x = self.lin_first(x)
         x = self.layer_norm(x)
         for block in self.conf_blocks:
             x = block(x)
         x = self.lin_second(x)
-        # x = self.i_stft(x, spec, length)
         return x

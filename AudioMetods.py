@@ -91,7 +91,7 @@ def save_audio(file, x):
             file (str) - куда сохранить
             x (tensor) - что нужно сохранить
     """
-    sf.write(file, x, part_frames)
+    sf.write(file, x, 16_000)
 
 
 def ashow(x, sr=part_frames):
