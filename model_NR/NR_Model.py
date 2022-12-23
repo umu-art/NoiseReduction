@@ -14,7 +14,7 @@ class NRModel:
         self.model = Conformer(Config.n_fft, Config.hop_length, Config.win_length, Config.window,
                                Config.size, Config.conf_blocks_num, Config.conv_kernel_size)
 
-        snap = torch.load('model_NR/model.tar', map_location='cpu')
+        snap = torch.load('model_NR/model_NR.tar', map_location='cpu')
         model_state_dict = snap['model']
         self.model.load_state_dict(model_state_dict)
         to_cuda(self.model)

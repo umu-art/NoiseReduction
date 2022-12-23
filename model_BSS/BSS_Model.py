@@ -11,7 +11,7 @@ class BSSModel:
     def __init__(self):
         self.model = ConformerBSS(Config.size, Config.conf_blocks_num, Config.conv_kernel_size, 1, Config.w_len,
                                   Config.w_len // 2)
-        snap = torch.load('model_BSS/model.tar', map_location='cpu')
+        snap = torch.load('model_BSS/model_BSS.tar', map_location='cpu')
         model_state_dict = snap['model']
         self.model.load_state_dict(model_state_dict)
         to_cuda(self.model)
